@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./demo-purpose-styles.css" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <section id="table-container" class="container">
+      <div class="theme-toggle">
+        <span onclick="toggleTheme()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-circle-half"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"
+            />
+          </svg>
+        </span>
+      </div>
+      <h1>Tabela simples</h1>
+      <table class="table">
+        <thead>
+          <tr>
+            <th data-sortable title="UUID">ID</th>
+            <th data-sortable>Company</th>
+            <th>Contact</th>
+            <th>Country</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="uuid">1</td>
+            <td data-label="">Alfreds Futterkiste</td>
+            <td data-label="">Maria Anders</td>
+            <td data-label="">Germany</td>
+          </tr>
+          <tr>
+            <td data-label="uuid">2</td>
+            <td data-label="">Centro comercial Moctezuma</td>
+            <td data-label="">Francisco Chang</td>
+            <td data-label="">Mexico</td>
+          </tr>
+          <tr>
+            <td data-label="uuid">3</td>
+            <td data-label="">Cian</td>
+            <td data-label="">José Carlos</td>
+            <td data-label="">Brazil</td>
+          </tr>
+          <tr>
+            <td data-label="uuid">4</td>
+            <td data-label="">ABC Softwares</td>
+            <td data-label="">Paula Maria</td>
+            <td data-label="">Canada</td>
+          </tr>
+        </tbody>
+      </table>
+      <article id="result">Selected: <span>---</span></article>
+    </section>
+    <script src="./table-actions.js"></script>
+    <script>
+      const table = new TableActions("table", {
+        checkableRows: true,
+        checkableRowTdReference: "[data-label='uuid']",
+        checkedElementsCallBack: function (checkedElements) {
+          document.querySelector("#result>span").innerHTML = checkedElements.join(", ");
+        },
+      });
+
+      function toggleTheme() {
+        document.querySelector("body").classList.toggle("dark");
+      }
+    </script>
+  </body>
+</html>

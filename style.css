@@ -1,0 +1,65 @@
+:root {
+  --color-disabled: rgb(201, 201, 201);
+  --color-th-hover: #f4f4f4;
+  --color-bg: white;
+  --color-text: #1c1c1c;
+}
+
+.dark {
+  --color-disabled: #767676;
+  --color-th-hover: #505050;
+  --color-bg: rgb(59, 59, 59);
+  --color-text: #f7f7f7;
+}
+
+table {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+td,
+th {
+  border: 3px solid var(--color-disabled);
+  text-align: left;
+  padding: 10px 16px;
+}
+
+[data-sortable] {
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+
+[data-sortable]:hover {
+  background-color: var(--color-th-hover);
+}
+
+[data-sortable]::before {
+  content: "\25BE";
+  right: 5px;
+  margin: 4px 0;
+  position: absolute;
+}
+
+[data-sortable]::after {
+  content: "\25B4";
+  right: 5px;
+  margin: -4px 0;
+  position: absolute;
+}
+
+th.sorted::after {
+  color: var(--color-disabled);
+}
+
+th.sorted_reverse::before {
+  color: var(--color-disabled);
+}
+
+[data-sortable]:not(.sorted):not(.sorted_reverse):after {
+  color: var(--color-disabled);
+}
+
+[data-sortable]:not(.sorted):not(.sorted_reverse):before {
+  color: var(--color-disabled);
+}

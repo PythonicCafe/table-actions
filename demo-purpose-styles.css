@@ -1,0 +1,73 @@
+/* Demo purposes table styles */
+:root {
+  --color-disabled: #999;
+  --color-bg: white;
+  --color-text: #1c1c1c;
+}
+
+.dark {
+  --color-disabled: #767676;
+  --color-bg: rgb(59, 59, 59);
+  --color-text: #f7f7f7;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.container {
+  padding: 0 1rem;
+  margin: 3rem auto;
+  max-width: 1000px;
+}
+
+.btn {
+  margin: 1rem 0;
+  padding: 0.6rem;
+  background-color: rgb(226, 226, 226);
+  border-radius: 0.25rem;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.btn:hover {
+  background-color: rgb(109, 109, 109);
+  color: white;
+}
+
+#result {
+  border: 2px solid var(--color-disabled);
+  font-size: 1.2rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+h1 {
+  padding-bottom: 0.5rem;
+}
+
+.theme-toggle {
+  text-align: right;
+  user-select: none;
+  cursor: pointer;
+}
+
+.theme-toggle > span {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.theme-toggle > span:hover {
+  opacity: 60%;
+}
+
+/* End Demo purposes table styles */
