@@ -17,11 +17,11 @@ class TableActions {
 
   _init() {
     const checkableRows = this.options.checkableRows;
-    if (checkableRows) this._checkBoxes();
-    if (this.options.sortable) this._setSortable(checkableRows);
+    if (checkableRows) this._setTableCheckBoxes();
+    if (this.options.sortable) this._setTableSort(checkableRows);
   }
 
-  _setSortable(checkableRows) {
+  _setTableSort(checkableRows) {
     const self = this;
 
     // Setting class to activate table arrows styles
@@ -41,12 +41,12 @@ class TableActions {
       }
 
       th.addEventListener("click", function () {
-        self._sortable(th, thIndex, otherTh);
+        self._sortTable(th, thIndex, otherTh);
       });
     }
   }
 
-  _sortable(th, thIndex, otherThs) {
+  _sortTable(th, thIndex, otherThs) {
     const tbody = this.table.querySelector("tbody");
     const rows = tbody.getElementsByTagName("tr");
 
@@ -86,7 +86,7 @@ class TableActions {
     }
   }
 
-  _checkBoxes() {
+  _setTableCheckBoxes() {
     // Get class reference to actual table
     const self = this,
       table = this.table;
@@ -146,10 +146,9 @@ class TableActions {
 
     for (const checkbox of checkboxes) {
       checkbox.addEventListener("click", function (event) {
-        const parentEl = event.target.closest("tbody, thead");
-        const table = event.target.closest("table");
+        const thead = event.target.closest("thead");
 
-        if (parentEl.nodeName == "THEAD") {
+        if (thead) {
           for (const el of table.querySelectorAll("tbody [type='checkbox']")) {
             el.checked = event.target.checked;
             el.checked
