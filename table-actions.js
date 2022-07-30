@@ -46,7 +46,43 @@ class TableActions {
     }
   }
 
+  _sortDataFormat(format, value, nextValue) {
+    switch (format) {
+      case "DD/MM/YYYY":
+        value = value.split("/");
+        value = new Date(value[2] + "-" + value[1] + "-" + value[0]);
+        nextValue = nextValue.split("/");
+        nextValue = new Date(
+          nextValue[2] + "-" + nextValue[1] + "-" + nextValue[0]
+        );
+        break;
+
+      case "YYYY/MM/DD":
+        value = new Date(value.replace("/", "-"));
+        nextValue = new Date(nextValue.replace("/", "-"));
+
+      case "YYYY-MM-DD":
+        value = new Date(value);
+        nextValue = new Date(nextValue);
+        break;
+
+      case "YYYY-MM-DD HH:MM:SS":
+        const [valueDate, valueHour] = value.split(" ");
+        value = new Date(valueDate + "T" + valueHour);
+        const [nextValueDate, nextValueHour] = value.split(" ");
+        value = new Date(nextValueDate + "T" + nextValueHour);
+        break;
+
+      default:
+        throw new Error(`Format ${format} not recognized`);
+        break;
+    }
+
+    return [value, nextValue];
+  }
+
   _sortTable(th, thIndex, otherThs) {
+    const self = this;
     const tbody = this.table.querySelector("tbody");
     const rows = tbody.getElementsByTagName("tr");
 
@@ -55,6 +91,8 @@ class TableActions {
     }
 
     th.dataset.asc = th.dataset.asc ? !JSON.parse(th.dataset.asc) : true;
+
+    const format = th.dataset.format;
 
     let unsorted = true;
     while (unsorted) {
@@ -66,14 +104,17 @@ class TableActions {
         let value = row.querySelectorAll("td")[thIndex].innerHTML;
         let nextValue = nextRow.querySelectorAll("td")[thIndex].innerHTML;
 
-        // TODO: Check if user set type date and order by the date format
-        const regex = /[\ \,\;\n]/g;
+        if (format) {
+          [value, nextValue] = self._sortDataFormat(format, value, nextValue);
+        } else {
+          const regex = /[\ \,\;\n]/g;
 
-        value = value.replace(regex, "").toLowerCase();
-        nextValue = nextValue.replace(regex, "").toLowerCase();
-        if (!isNaN(value)) {
-          value = parseFloat(value);
-          nextValue = parseFloat(nextValue);
+          value = value.replace(regex, "").toLowerCase();
+          nextValue = nextValue.replace(regex, "").toLowerCase();
+          if (!isNaN(value)) {
+            value = parseFloat(value);
+            nextValue = parseFloat(nextValue);
+          }
         }
 
         if (
