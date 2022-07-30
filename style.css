@@ -1,10 +1,13 @@
 :root {
-  --color-disabled: rgb(201, 201, 201);
+  --color-disabled: #dadada;
   --color-versatile-lighter: #f4f4f4;
   --color-versatile-light: #f9f9f9;
   --color-versatile-contrast: #7e7e7e;
-  --color-bg: white;
+  --color-versatile-contrast-light: #cacaca;
+  --color-bg: #ffffff;
   --color-text: #1c1c1c;
+  --icon-bg-chevron-up: url("data:image/svg+xml,<svg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z'/></svg>");
+  --icon-bg-chevron-down: url("data:image/svg+xml,<svg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>");
 }
 
 .dark {
@@ -12,7 +15,8 @@
   --color-versatile-lighter: #505050;
   --color-versatile-light: #404040;
   --color-versatile-contrast: #cecece;
-  --color-bg: rgb(59, 59, 59);
+  --color-versatile-contrast-light: #7b7b7b;
+  --color-bg: #3b3b3b;
   --color-text: #f7f7f7;
 }
 
@@ -35,7 +39,7 @@ td,
 th {
   border: 3px solid var(--color-disabled);
   text-align: left;
-  padding: 10px 16px;
+  padding: 10px 32px 10px 6px;
 }
 
 table.sortable th:not(.tb-checkbox-column) {
@@ -50,34 +54,39 @@ table.sortable th:not(.tb-checkbox-column):hover {
 
 table.sortable th:not(.tb-checkbox-column)::before,
 table.sortable th:not(.tb-checkbox-column)::after {
-  color: var(--color-disabled);
-  right: 5px;
+  background-color: var(--color-versatile-contrast-light);
+  right: 0.4rem;
   position: absolute;
   font-size: 1.2rem;
 }
 
 table.sortable th:not(.tb-checkbox-column)::before {
-  content: "\25BE";
-  margin: 0.2rem 0;
+  content: " ";
+  -webkit-mask-image: var(--icon-bg-chevron-up);
+  mask-image: var(--icon-bg-chevron-up);
+  bottom: 50%;
+  height: 0.6rem;
+  width: 0.6rem;
 }
 
 table.sortable th:not(.tb-checkbox-column)::after {
-  content: "\25B4";
-  margin: -0.4rem 0;
+  content: " ";
+  -webkit-mask-image: var(--icon-bg-chevron-down);
+  mask-image: var(--icon-bg-chevron-down);
+  top: 50%;
+  height: 0.6rem;
+  width: 0.6rem;
 }
 
-table.sortable th[data-asc="true"]::before {
-  color: var(--color-versatile-contrast);
-}
-
+table.sortable th[data-asc="true"]::before,
 table.sortable th[data-asc="false"]::after {
-  color: var(--color-versatile-contrast);
+  background-color: var(--color-versatile-contrast);
 }
 
 .tb-checkbox-column,
 .tb-checkbox-row {
   text-align: center;
-  padding: 0px;
+  padding: 0.5rem;
 }
 
 .tb-checkbox-column input,
