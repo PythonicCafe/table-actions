@@ -1,13 +1,17 @@
 :root {
   --color-disabled: rgb(201, 201, 201);
-  --color-th-hover: #f4f4f4;
+  --color-versatile-lighter: #f4f4f4;
+  --color-versatile-light: #f9f9f9;
+  --color-versatile-contrast: #7e7e7e;
   --color-bg: white;
   --color-text: #1c1c1c;
 }
 
 .dark {
   --color-disabled: #767676;
-  --color-th-hover: #505050;
+  --color-versatile-lighter: #505050;
+  --color-versatile-light: #404040;
+  --color-versatile-contrast: #cecece;
   --color-bg: rgb(59, 59, 59);
   --color-text: #f7f7f7;
 }
@@ -17,6 +21,14 @@ table {
   color: var(--color-text);
 }
 
+tbody tr.checked {
+  background-color: var(--color-versatile-lighter);
+}
+
+tbody tr:not(.checked):hover {
+  background-color: var(--color-versatile-light);
+}
+
 td,
 th {
   border: 3px solid var(--color-disabled);
@@ -24,42 +36,50 @@ th {
   padding: 10px 16px;
 }
 
-[data-sortable] {
+table.sortable th:not(.tb-checkbox-column) {
   cursor: pointer;
   position: relative;
   user-select: none;
 }
 
-[data-sortable]:hover {
-  background-color: var(--color-th-hover);
+table.sortable th:not(.tb-checkbox-column):hover {
+  background-color: var(--color-versatile-light);
 }
 
-[data-sortable]::before {
+table.sortable th:not(.tb-checkbox-column)::before,
+table.sortable th:not(.tb-checkbox-column)::after {
+  color: var(--color-disabled);
+  right: 5px;
+  position: absolute;
+  font-size: 1.2rem;
+}
+
+table.sortable th:not(.tb-checkbox-column)::before {
   content: "\25BE";
-  right: 5px;
-  margin: 4px 0;
-  position: absolute;
+  margin: 0.2rem 0;
 }
 
-[data-sortable]::after {
+table.sortable th:not(.tb-checkbox-column)::after {
   content: "\25B4";
-  right: 5px;
-  margin: -4px 0;
-  position: absolute;
+  margin: -0.4rem 0;
 }
 
-th.sorted::after {
-  color: var(--color-disabled);
+table.sortable th[data-asc="true"]::before {
+  color: var(--color-versatile-contrast);
 }
 
-th.sorted_reverse::before {
-  color: var(--color-disabled);
+table.sortable th[data-asc="false"]::after {
+  color: var(--color-versatile-contrast);
 }
 
-[data-sortable]:not(.sorted):not(.sorted_reverse):after {
-  color: var(--color-disabled);
+.tb-checkbox-column,
+.tb-checkbox-row {
+  text-align: center;
+  padding: 0px;
 }
 
-[data-sortable]:not(.sorted):not(.sorted_reverse):before {
-  color: var(--color-disabled);
+.tb-checkbox-column input,
+.tb-checkbox-row input {
+  transform: scale(1.2);
+  cursor: pointer;
 }
