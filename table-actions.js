@@ -5,7 +5,7 @@ class TableActions {
     this.options = {
       sortable: false,
       checkableRows: false,
-      checkableRowTdReference: "[data-label='ref']",
+      checkableRowTdReference: "[data-ref]",
       checkedElementsCallBack: function (checkedElements) {
         console.log(checkedElements);
       },
@@ -128,12 +128,10 @@ class TableActions {
         "tbody [type='checkbox']"
       )) {
         if (checkbox.checked == true) {
-          // TODO: Better reference to get id uuid value
           checked.push(
             checkbox
               .closest("tr")
-              .querySelector(self.options.checkableRowTdReference)
-              .innerHTML.trim()
+              .querySelector(self.options.checkableRowTdReference).dataset.ref
           );
         }
       }
