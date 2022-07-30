@@ -67,10 +67,10 @@ class TableActions {
         let nextValue = nextRow.querySelectorAll("td")[thIndex].innerHTML;
 
         // TODO: Check if user set type date and order by the date format
-        const regex = /[\ \,\;]/g;
+        const regex = /[\ \,\;\n]/g;
 
-        value = value.replace(regex, "");
-        nextValue = nextValue.replace(regex, "");
+        value = value.replace(regex, "").toLowerCase();
+        nextValue = nextValue.replace(regex, "").toLowerCase();
         if (!isNaN(value)) {
           value = parseFloat(value);
           nextValue = parseFloat(nextValue);
