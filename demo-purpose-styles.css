@@ -16,11 +16,6 @@ body {
   color: var(--color-text);
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
 .container {
   padding: 0 1rem;
   margin: 3rem auto;

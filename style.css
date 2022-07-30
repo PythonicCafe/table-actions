@@ -17,6 +17,8 @@
 }
 
 table {
+  width: 100%;
+  border-collapse: collapse;
   background-color: var(--color-bg);
   color: var(--color-text);
 }
