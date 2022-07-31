@@ -1,21 +1,25 @@
 :root {
-  --color-disabled: #dadada;
-  --color-versatile-lighter: #f4f4f4;
-  --color-versatile-light: #f9f9f9;
-  --color-versatile-contrast: #7e7e7e;
-  --color-versatile-contrast-light: #cacaca;
+  --color-disabled: #f7f7f7;
+  --color-light-extra: #f4f4f4;
+  --color-light: #f9f9f9;
+  --color-base: #e9e9e9;
+  --color-base-extra: #dbdbdb;
+  --color-heavy: #7e7e7e;
+  --color-heavy-extra: #dadada;
   --color-bg: #ffffff;
   --color-text: #1c1c1c;
-  --icon-bg-chevron-up: url("data:image/svg+xml,<svg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z'/></svg>");
-  --icon-bg-chevron-down: url("data:image/svg+xml,<svg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>");
+  --icon-chevron-up: url("data:image/svg+xml,<svg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z'/></svg>");
+  --icon-chevron-down: url("data:image/svg+xml,<svg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>");
 }
 
 .dark {
-  --color-disabled: #767676;
-  --color-versatile-lighter: #505050;
-  --color-versatile-light: #404040;
-  --color-versatile-contrast: #cecece;
-  --color-versatile-contrast-light: #7b7b7b;
+  --color-disabled: #8d8d8d;
+  --color-light-extra: #505050;
+  --color-light: #404040;
+  --color-base: #5a5a5a;
+  --color-base-extra: #4a4a4a;
+  --color-heavy: #cecece;
+  --color-heavy-extra: #707070;
   --color-bg: #3b3b3b;
   --color-text: #f7f7f7;
 }
@@ -28,16 +32,16 @@ table {
 }
 
 tbody tr.checked {
-  background-color: var(--color-versatile-lighter);
+  background-color: var(--color-light-extra);
 }
 
 tbody tr:not(.checked):hover {
-  background-color: var(--color-versatile-light);
+  background-color: var(--color-light);
 }
 
 td,
 th {
-  border: 3px solid var(--color-disabled);
+  border: 3px solid var(--color-heavy-extra);
   text-align: left;
   padding: 10px 32px 10px 6px;
 }
@@ -49,12 +53,12 @@ table.sortable th:not(.tb-checkbox-column) {
 }
 
 table.sortable th:not(.tb-checkbox-column):hover {
-  background-color: var(--color-versatile-light);
+  background-color: var(--color-light);
 }
 
 table.sortable th:not(.tb-checkbox-column)::before,
 table.sortable th:not(.tb-checkbox-column)::after {
-  background-color: var(--color-versatile-contrast-light);
+  background-color: var(--color-heavy-extra);
   right: 0.4rem;
   position: absolute;
   font-size: 1.2rem;
@@ -62,8 +66,8 @@ table.sortable th:not(.tb-checkbox-column)::after {
 
 table.sortable th:not(.tb-checkbox-column)::before {
   content: " ";
-  -webkit-mask-image: var(--icon-bg-chevron-up);
-  mask-image: var(--icon-bg-chevron-up);
+  -webkit-mask-image: var(--icon-chevron-up);
+  mask-image: var(--icon-chevron-up);
   bottom: 50%;
   height: 0.6rem;
   width: 0.6rem;
@@ -71,8 +75,8 @@ table.sortable th:not(.tb-checkbox-column)::before {
 
 table.sortable th:not(.tb-checkbox-column)::after {
   content: " ";
-  -webkit-mask-image: var(--icon-bg-chevron-down);
-  mask-image: var(--icon-bg-chevron-down);
+  -webkit-mask-image: var(--icon-chevron-down);
+  mask-image: var(--icon-chevron-down);
   top: 50%;
   height: 0.6rem;
   width: 0.6rem;
@@ -80,7 +84,7 @@ table.sortable th:not(.tb-checkbox-column)::after {
 
 table.sortable th[data-asc="true"]::before,
 table.sortable th[data-asc="false"]::after {
-  background-color: var(--color-versatile-contrast);
+  background-color: var(--color-heavy);
 }
 
 .tb-checkbox-column,
@@ -93,4 +97,30 @@ table.sortable th[data-asc="false"]::after {
 .tb-checkbox-row input {
   transform: scale(1.2);
   cursor: pointer;
+}
+
+.btn {
+  margin: 1rem 0;
+  padding: 0.6rem;
+  background-color: var(--color-base);
+  color: var(--color-text);
+  border-radius: 0.25rem;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.btn:hover:not(:disabled) {
+  background-color: var(--color-base-extra);
+}
+
+.btn:disabled {
+  background-color: var(--color-disabled);
+  color: var(--color-heavy-extra);
+  cursor: auto;
+}
+
+.btn-pagination {
+  margin-left: 0.5rem;
 }

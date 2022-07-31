@@ -1,15 +1,37 @@
+function toNormalForm(str) {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function newElement(element, id, classList = [], label, nodeToAppend) {
+  const el = document.createElement(element);
+  el.id = id;
+  el.classList.add(...classList);
+  el.innerHTML = label;
+  return nodeToAppend.appendChild(el);
+}
+
 class TableActions {
   constructor(element, options) {
     this.table =
       typeof element === "string" ? document.querySelector(element) : element;
+
+    this.tableRows = [
+      ...this.table.querySelector("tbody").querySelectorAll("tr"),
+    ];
+
+    this.currentPage = 0;
+
     this.options = {
-      sortable: false,
-      checkableRows: false,
-      checkableRowTdReference: "[data-ref]",
-      checkedElementsCallBack: function (checkedElements) {
-        console.log(checkedElements);
-      },
-      ...options,
+      sortable: options.sortable ?? false,
+      paginable: options.paginable ?? true,
+      rowsPerPage: options.rowsPerPage ?? 10,
+      checkableRows: options.checkableRows ?? false,
+      checkableRowTdReference: options.checkableRowTdReference ?? "[data-ref]",
+      checkedElementsCallBack:
+        options.checkedElementsCallBack ??
+        function (checkedElements) {
+          console.log(checkedElements);
+        },
     };
 
     this._init();
@@ -19,6 +41,43 @@ class TableActions {
     const checkableRows = this.options.checkableRows;
     if (checkableRows) this._setTableCheckBoxes();
     if (this.options.sortable) this._setTableSort(checkableRows);
+
+    if (this.options.paginable) {
+      this._setPaginationButtons();
+      this._updateTable();
+    }
+  }
+
+  _setPaginationButtons() {
+    const self = this;
+    const backButton = newElement(
+      "button",
+      "back-page",
+      ["btn", "btn-pagination"],
+      "<",
+      self.table.parentNode
+    );
+    const forwardButton = newElement(
+      "button",
+      "forward-page",
+      ["btn", "btn-pagination"],
+      ">",
+      self.table.parentNode
+    );
+
+    backButton.addEventListener("click", function (event) {
+      if (self.currentPage > 0) {
+        self.currentPage = self.currentPage -= 1;
+        self._updateTable();
+      }
+    });
+
+    forwardButton.addEventListener("click", function (event) {
+      if (self.currentPage < self._getLastPage()) {
+        self.currentPage = self.currentPage += 1;
+        self._updateTable();
+      }
+    });
   }
 
   _setTableSort(checkableRows) {
@@ -29,48 +88,49 @@ class TableActions {
 
     const tableHeads = this.table.querySelectorAll("th");
     for (
-      let thIndex = checkableRows ? 1 : 0;
+      let thIndex = checkableRows ? 1 : 0; // if checkable column jump first
       thIndex < tableHeads.length;
       thIndex++
     ) {
       const th = tableHeads[thIndex];
       const otherTh = [];
 
+      // Getting other columns to remove active icons class colors
       for (const [index, el] of tableHeads.entries()) {
         if (index !== thIndex) otherTh.push(el);
       }
 
+      // Setting events listeners to get click in table headers.
+      // Clicks will activate sort to the clicked column
       th.addEventListener("click", function () {
         self._sortTable(th, thIndex, otherTh);
       });
     }
   }
 
-  _sortDataFormat(format, value, nextValue) {
+  _sortDataFormat(format, val, nextVal) {
     switch (format) {
       case "DD/MM/YYYY":
-        value = value.split("/");
-        value = new Date(value[2] + "-" + value[1] + "-" + value[0]);
-        nextValue = nextValue.split("/");
-        nextValue = new Date(
-          nextValue[2] + "-" + nextValue[1] + "-" + nextValue[0]
-        );
+        val = val.split("/");
+        val = new Date(val[2] + "-" + val[1] + "-" + val[0]);
+        nextVal = nextVal.split("/");
+        nextVal = new Date(nextVal[2] + "-" + nextVal[1] + "-" + nextVal[0]);
         break;
 
       case "YYYY/MM/DD":
-        value = new Date(value.replace("/", "-"));
-        nextValue = new Date(nextValue.replace("/", "-"));
+        val = new Date(val.replace("/", "-"));
+        nextVal = new Date(nextVal.replace("/", "-"));
 
       case "YYYY-MM-DD":
-        value = new Date(value);
-        nextValue = new Date(nextValue);
+        val = new Date(val);
+        nextVal = new Date(nextVal);
         break;
 
       case "YYYY-MM-DD HH:MM:SS":
-        const [valueDate, valueHour] = value.split(" ");
-        value = new Date(valueDate + "T" + valueHour);
-        const [nextValueDate, nextValueHour] = value.split(" ");
-        value = new Date(nextValueDate + "T" + nextValueHour);
+        const [valDate, valHour] = val.split(" ");
+        val = new Date(valDate + "T" + valHour);
+        const [nextValDate, nextValHour] = val.split(" ");
+        val = new Date(nextValDate + "T" + nextValHour);
         break;
 
       default:
@@ -78,59 +138,60 @@ class TableActions {
         break;
     }
 
-    return [value, nextValue];
+    return [val, nextVal];
   }
 
   _sortTable(th, thIndex, otherThs) {
     const self = this;
-    const tbody = this.table.querySelector("tbody");
-    const rows = tbody.getElementsByTagName("tr");
+    const asc = th.dataset.asc ? !JSON.parse(th.dataset.asc) : true;
+    const format = th.dataset.format;
 
     for (const otherTh of otherThs) {
       otherTh.removeAttribute("data-asc");
     }
 
-    th.dataset.asc = th.dataset.asc ? !JSON.parse(th.dataset.asc) : true;
+    self.tableRows.sort(function (val, nextVal) {
+      val = val.querySelectorAll("td")[thIndex].innerHTML;
+      nextVal = nextVal.querySelectorAll("td")[thIndex].innerHTML;
 
-    const format = th.dataset.format;
+      if (format) {
+        [val, nextVal] = self._sortDataFormat(format, val, nextVal);
+      } else {
+        const regex = /[\ \,\;\n]/g;
 
-    let unsorted = true;
-    while (unsorted) {
-      unsorted = false;
+        val = val.replace(regex, "").toLowerCase();
+        nextVal = nextVal.replace(regex, "").toLowerCase();
 
-      for (let r = 0; r < rows.length - 1; r++) {
-        const row = rows[r];
-        const nextRow = rows[r + 1];
-        let value = row.querySelectorAll("td")[thIndex].innerHTML;
-        let nextValue = nextRow.querySelectorAll("td")[thIndex].innerHTML;
-
-        if (format) {
-          [value, nextValue] = self._sortDataFormat(format, value, nextValue);
+        if (!isNaN(val)) {
+          val = parseFloat(val);
+          nextVal = parseFloat(nextVal);
         } else {
-          const regex = /[\ \,\;\n]/g;
-
-          value = value.replace(regex, "").toLowerCase();
-          nextValue = nextValue.replace(regex, "").toLowerCase();
-          if (!isNaN(value)) {
-            value = parseFloat(value);
-            nextValue = parseFloat(nextValue);
-          }
-        }
-
-        if (
-          JSON.parse(th.dataset.asc) ? value > nextValue : value < nextValue
-        ) {
-          tbody.insertBefore(nextRow, row);
-          unsorted = true;
+          val = toNormalForm(val);
+          nextVal = toNormalForm(nextVal);
         }
       }
-    }
+
+      if ((asc && val > nextVal) || (!asc && val < nextVal)) {
+        return 1;
+      }
+      if ((asc && val < nextVal) || (!asc && val > nextVal)) {
+        return -1;
+      }
+
+      // value must be equal to nextValue
+      return 0;
+    });
+
+    // Adding sorted elements to the table body
+    self._updateTable();
+
+    // Updating dataset asc value
+    th.dataset.asc = asc;
   }
 
   _setTableCheckBoxes() {
     // Get class reference to actual table
-    const self = this,
-      table = this.table;
+    const self = this;
 
     function tableCheckboxInsert(elementType, classes = []) {
       const element = document.createElement(elementType);
@@ -147,32 +208,30 @@ class TableActions {
     }
 
     // Add table header checkbox
-    const tr = table.querySelector("thead>tr");
+    const tr = self.table.querySelector("thead>tr");
     tr.prepend(tableCheckboxInsert("th", ["tb-checkbox-column"]));
 
     // Add table rows checkbox
-    for (const tr of table.querySelectorAll("tbody>tr")) {
+    for (const tr of self.table.querySelectorAll("tbody>tr")) {
       tr.prepend(tableCheckboxInsert("td", ["tb-checkbox-row"]));
     }
 
     // Set interaction button
-    const button = document.createElement("button");
-    button.id = "interact";
-    button.classList = "btn";
-    button.innerHTML = "Interact";
-    table.parentNode.appendChild(button);
+    const button = newElement(
+      "button",
+      "interact",
+      ["btn"],
+      "Interact",
+      self.table.parentNode
+    );
 
     // Click button show all element selected
     button.addEventListener("click", function (event) {
       const checked = [];
-      for (const checkbox of table.querySelectorAll(
-        "tbody [type='checkbox']"
-      )) {
-        if (checkbox.checked == true) {
+      for (const row of self.tableRows) {
+        if (row.querySelector("[type='checkbox']").checked) {
           checked.push(
-            checkbox
-              .closest("tr")
-              .querySelector(self.options.checkableRowTdReference).dataset.ref
+            row.querySelector(self.options.checkableRowTdReference).dataset.ref
           );
         }
       }
@@ -188,17 +247,72 @@ class TableActions {
         const thead = event.target.closest("thead");
 
         if (thead) {
-          for (const el of table.querySelectorAll("tbody [type='checkbox']")) {
-            el.checked = event.target.checked;
-            el.checked
-              ? el.closest("tr").classList.add("checked")
-              : el.closest("tr").classList.remove("checked");
+          for (const el of self.tableRows) {
+            const checkbox = el.querySelector("[type='checkbox']");
+            if (event.target.checked) {
+              checkbox.checked = true;
+              checkbox.closest("tr").classList.add("checked");
+            } else {
+              checkbox.checked = false;
+              checkbox.closest("tr").classList.remove("checked");
+            }
           }
         } else {
-          table.querySelector("thead [type='checkbox']").checked = false;
+          self.table.querySelector("thead [type='checkbox']").checked = false;
           event.target.closest("tr").classList.toggle("checked");
         }
       });
+    }
+  }
+
+  _getCurrentStartRow() {
+    return this.options.rowsPerPage * this.currentPage;
+  }
+
+  _getLastPageRow() {
+    return this._getCurrentStartRow() + this.options.rowsPerPage;
+  }
+
+  _getLastPage() {
+    return Math.ceil(this.tableRows.length / this.options.rowsPerPage) - 1;
+  }
+
+  _updateTable() {
+    const self = this;
+    const tbody = self.table.querySelector("tbody");
+
+    if (self.options.paginable) {
+      tbody.innerHTML = "";
+      for (
+        let i = self._getCurrentStartRow();
+        i < self._getLastPageRow() && i < self.tableRows.length;
+        i++
+      ) {
+        tbody.appendChild(self.tableRows[i]);
+      }
+
+      // Update buttons state
+      self._updateButtons();
+    } else {
+      for (const row of self.tableRows) {
+        tbody.appendChild(row);
+      }
+    }
+  }
+
+  _updateButtons() {
+    const self = this;
+
+    if (self.currentPage === self._getLastPage()) {
+      self.table.parentNode.querySelector("#forward-page").disabled = true;
+    } else {
+      self.table.parentNode.querySelector("#forward-page").disabled = false;
+    }
+
+    if (self.currentPage === 0) {
+      self.table.parentNode.querySelector("#back-page").disabled = true;
+    } else {
+      self.table.parentNode.querySelector("#back-page").disabled = false;
     }
   }
 }

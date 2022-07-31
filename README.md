@@ -3,13 +3,13 @@
 Simple & customizable table with sort and checkbox functions in vanilla JS
 
 ## Features
+- Checkable columns with callback function to interact with selected elements
+- Paginate
 - Sortable columns
 - Sort by date
-- Checkable column with callback function to interact with selected elements
 - Theme light and dark
 
 ## Roadmap
 - Responsive template keeping actions
-- Paginate
 - Search field
 - API request data to populate Table
