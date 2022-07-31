@@ -1,3 +1,7 @@
+/*
+ * TODO: Separete external functions in an external file
+ * utils.js and import here
+ */
 function toNormalForm(str) {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
@@ -15,11 +19,13 @@ class TableActions {
     this.table =
       typeof element === "string" ? document.querySelector(element) : element;
 
+    this.tableContainer = this.table.parentNode.parentNode;
+
     this.tableRows = [
       ...this.table.querySelector("tbody").querySelectorAll("tr"),
     ];
 
-    this.currentPage = 0;
+    this.currentPage = 1;
 
     this.options = {
       sortable: options.sortable ?? false,
@@ -27,8 +33,8 @@ class TableActions {
       rowsPerPage: options.rowsPerPage ?? 10,
       checkableRows: options.checkableRows ?? false,
       checkableRowTdReference: options.checkableRowTdReference ?? "[data-ref]",
-      checkedElementsCallBack:
-        options.checkedElementsCallBack ??
+      checkedElementsCallback:
+        options.checkedElementsCallback ??
         function (checkedElements) {
           console.log(checkedElements);
         },
@@ -39,45 +45,188 @@ class TableActions {
 
   _init() {
     const checkableRows = this.options.checkableRows;
+
+    // Set bottom-div to add buttons
+    newElement(
+      "div",
+      "bottom-div",
+      ["ta-bottom-div"],
+      "",
+      this.tableContainer
+    );
+
     if (checkableRows) this._setTableCheckBoxes();
     if (this.options.sortable) this._setTableSort(checkableRows);
 
-    if (this.options.paginable) {
+    if (this.options.paginable && this._lastPage() > 1) {
       this._setPaginationButtons();
       this._updateTable();
     }
   }
 
+  // Setters
+
   _setPaginationButtons() {
     const self = this;
-    const backButton = newElement(
+
+    const bottomDiv = self.tableContainer.querySelector("#bottom-div");
+
+    newElement(
       "button",
       "back-page",
-      ["btn", "btn-pagination"],
-      "<",
-      self.table.parentNode
-    );
-    const forwardButton = newElement(
-      "button",
-      "forward-page",
-      ["btn", "btn-pagination"],
-      ">",
-      self.table.parentNode
-    );
-
-    backButton.addEventListener("click", function (event) {
-      if (self.currentPage > 0) {
+      ["ta-btn", "ta-btn-pag"],
+      "&lt;",
+      bottomDiv
+    ).addEventListener("click", function (event) {
+      if (self.currentPage > 1) {
         self.currentPage = self.currentPage -= 1;
         self._updateTable();
       }
     });
 
-    forwardButton.addEventListener("click", function (event) {
-      if (self.currentPage < self._getLastPage()) {
+    newElement("div", "numbered-buttons", [], "", bottomDiv);
+
+    this._setNumberedButtons();
+
+    newElement(
+      "button",
+      "forward-page",
+      ["ta-btn", "ta-btn-pag"],
+      "&gt;",
+      bottomDiv
+    ).addEventListener("click", function (event) {
+      if (self.currentPage < self._lastPage()) {
         self.currentPage = self.currentPage += 1;
         self._updateTable();
       }
     });
+  }
+
+  _setNumberedButtons() {
+    const self = this;
+
+    const lastPage = this._lastPage();
+    const currentPage = this.currentPage;
+
+    const div = self.tableContainer.querySelector("#numbered-buttons");
+    div.innerHTML = "";
+
+    for (let i = 0; i < lastPage; i++) {
+      const pageNumber = i + 1;
+      const backwardAndNextTwoTimes = [currentPage - 2, currentPage + 2];
+      const backwardAndNext = [
+        currentPage - 1,
+        currentPage + 1,
+        ...backwardAndNextTwoTimes,
+      ];
+      const pagesOfMiddle = pageNumber > 4 && pageNumber < lastPage - 1;
+
+      let label = pageNumber;
+
+      if (lastPage > 8) {
+        if (
+          pagesOfMiddle &&
+          pageNumber !== currentPage &&
+          !backwardAndNext.includes(pageNumber)
+        ) {
+          continue;
+        }
+        if (
+          [...backwardAndNextTwoTimes, currentPage + 3].includes(pageNumber) &&
+          pageNumber > 3 &&
+          pageNumber < lastPage - 1
+        ) {
+          label = "...";
+        }
+      }
+
+      newElement(
+        "button",
+        `page-${pageNumber}`,
+        ["ta-btn", "ta-btn-pag-numbered"],
+        label,
+        self.tableContainer.querySelector("#numbered-buttons")
+      ).addEventListener("click", function (event) {
+        self.currentPage = pageNumber;
+        self._updateTable();
+      });
+    }
+  }
+
+  _setTableCheckBoxes() {
+    // Get class reference to actual table
+    const self = this;
+
+    function tableCheckboxInsert(elementType, classes = []) {
+      const element = document.createElement(elementType);
+      const input = document.createElement("input");
+
+      if (classes.length) {
+        element.classList.add(...classes);
+      }
+
+      input.type = "checkbox";
+      element.appendChild(input);
+
+      return element;
+    }
+
+    // Add table header checkbox
+    const tr = self.table.querySelector("thead>tr");
+    tr.prepend(tableCheckboxInsert("th", ["ta-checkbox-column"]));
+
+    // Add table rows checkbox
+    for (const tr of self.table.querySelectorAll("tbody>tr")) {
+      tr.prepend(tableCheckboxInsert("td", ["ta-checkbox-row"]));
+    }
+
+    // Set interaction button
+    const button = newElement(
+      "button",
+      "interact",
+      ["ta-btn"],
+      "Interact",
+      self.tableContainer.querySelector("#bottom-div")
+    );
+
+    // Click button show all element selected
+    button.addEventListener("click", async function (event) {
+      const checked = [];
+      for (const row of self.tableRows) {
+        if (row.querySelector("[type='checkbox']").checked) {
+          checked.push(
+            row.querySelector(self.options.checkableRowTdReference).dataset.ref
+          );
+        }
+      }
+
+      await self.options.checkedElementsCallback(checked);
+    });
+
+    // Table checkboxes logic, check all and check one by one
+    var checkboxes = document.querySelectorAll("[type='checkbox']");
+
+    for (const checkbox of checkboxes) {
+      checkbox.addEventListener("click", function (event) {
+        const thead = event.target.closest("thead");
+
+        if (thead) {
+          for (const el of self.tableRows) {
+            const checkbox = el.querySelector("[type='checkbox']");
+            if (event.target.checked) {
+              checkbox.checked = true;
+              checkbox.closest("tr").classList.add("checked");
+            } else {
+              checkbox.checked = false;
+              checkbox.closest("tr").classList.remove("checked");
+            }
+          }
+        } else {
+          self.table.querySelector("thead [type='checkbox']").checked = false;
+          event.target.closest("tr").classList.toggle("checked");
+        }
+      });
+    }
   }
 
   _setTableSort(checkableRows) {
@@ -189,93 +338,21 @@ class TableActions {
     th.dataset.asc = asc;
   }
 
-  _setTableCheckBoxes() {
-    // Get class reference to actual table
-    const self = this;
+  // Getters
 
-    function tableCheckboxInsert(elementType, classes = []) {
-      const element = document.createElement(elementType);
-      const input = document.createElement("input");
-
-      if (classes.length) {
-        element.classList.add(...classes);
-      }
-
-      input.type = "checkbox";
-      element.appendChild(input);
-
-      return element;
-    }
-
-    // Add table header checkbox
-    const tr = self.table.querySelector("thead>tr");
-    tr.prepend(tableCheckboxInsert("th", ["tb-checkbox-column"]));
-
-    // Add table rows checkbox
-    for (const tr of self.table.querySelectorAll("tbody>tr")) {
-      tr.prepend(tableCheckboxInsert("td", ["tb-checkbox-row"]));
-    }
-
-    // Set interaction button
-    const button = newElement(
-      "button",
-      "interact",
-      ["btn"],
-      "Interact",
-      self.table.parentNode
-    );
-
-    // Click button show all element selected
-    button.addEventListener("click", function (event) {
-      const checked = [];
-      for (const row of self.tableRows) {
-        if (row.querySelector("[type='checkbox']").checked) {
-          checked.push(
-            row.querySelector(self.options.checkableRowTdReference).dataset.ref
-          );
-        }
-      }
-
-      self.options.checkedElementsCallBack(checked);
-    });
-
-    // Table checkboxes logic, check all and check one by one
-    var checkboxes = document.querySelectorAll("[type='checkbox']");
-
-    for (const checkbox of checkboxes) {
-      checkbox.addEventListener("click", function (event) {
-        const thead = event.target.closest("thead");
-
-        if (thead) {
-          for (const el of self.tableRows) {
-            const checkbox = el.querySelector("[type='checkbox']");
-            if (event.target.checked) {
-              checkbox.checked = true;
-              checkbox.closest("tr").classList.add("checked");
-            } else {
-              checkbox.checked = false;
-              checkbox.closest("tr").classList.remove("checked");
-            }
-          }
-        } else {
-          self.table.querySelector("thead [type='checkbox']").checked = false;
-          event.target.closest("tr").classList.toggle("checked");
-        }
-      });
-    }
+  _currenRow() {
+    return this.options.rowsPerPage * (this.currentPage - 1);
   }
 
-  _getCurrentStartRow() {
-    return this.options.rowsPerPage * this.currentPage;
+  _lastRow() {
+    return this._currenRow() + this.options.rowsPerPage;
   }
 
-  _getLastPageRow() {
-    return this._getCurrentStartRow() + this.options.rowsPerPage;
+  _lastPage() {
+    return Math.ceil(this.tableRows.length / this.options.rowsPerPage);
   }
 
-  _getLastPage() {
-    return Math.ceil(this.tableRows.length / this.options.rowsPerPage) - 1;
-  }
+  // Updates of elements
 
   _updateTable() {
     const self = this;
@@ -284,14 +361,15 @@ class TableActions {
     if (self.options.paginable) {
       tbody.innerHTML = "";
       for (
-        let i = self._getCurrentStartRow();
-        i < self._getLastPageRow() && i < self.tableRows.length;
+        let i = self._currenRow();
+        i < self._lastRow() && i < self.tableRows.length;
         i++
       ) {
         tbody.appendChild(self.tableRows[i]);
       }
 
       // Update buttons state
+      self._setNumberedButtons();
       self._updateButtons();
     } else {
       for (const row of self.tableRows) {
@@ -303,16 +381,28 @@ class TableActions {
   _updateButtons() {
     const self = this;
 
-    if (self.currentPage === self._getLastPage()) {
-      self.table.parentNode.querySelector("#forward-page").disabled = true;
+    if (self.currentPage === self._lastPage()) {
+      self.tableContainer.querySelector("#forward-page").disabled = true;
     } else {
-      self.table.parentNode.querySelector("#forward-page").disabled = false;
+      self.tableContainer.querySelector("#forward-page").disabled = false;
     }
 
-    if (self.currentPage === 0) {
-      self.table.parentNode.querySelector("#back-page").disabled = true;
+    if (self.currentPage === 1) {
+      self.tableContainer.querySelector("#back-page").disabled = true;
     } else {
-      self.table.parentNode.querySelector("#back-page").disabled = false;
+      self.tableContainer.querySelector("#back-page").disabled = false;
     }
+
+    const lastPageButtonDisabled = this.tableContainer.querySelector(
+      ".ta-btn-pag-numbered:disabled"
+    );
+
+    if (lastPageButtonDisabled) {
+      lastPageButtonDisabled.disabled = false;
+    }
+
+    self.tableContainer.querySelector(
+      `#page-${self.currentPage}`
+    ).disabled = true;
   }
 }

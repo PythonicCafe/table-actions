@@ -20,12 +20,6 @@ body {
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-.container {
-  padding: 0 1rem;
-  margin: 3rem auto;
-  max-width: 1000px;
-}
-
 #result {
   border: 3px solid var(--color-heavy-extra);
   font-size: 1.2rem;
@@ -42,11 +36,11 @@ h1 {
 .theme-toggle {
   text-align: right;
   user-select: none;
-  cursor: pointer;
 }
 
 .theme-toggle > span {
   transition: opacity 0.3s ease-in-out;
+  cursor: pointer;
 }
 
 .theme-toggle > span:hover {
