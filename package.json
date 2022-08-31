@@ -1,0 +1,26 @@
+{
+  "name": "table-actions",
+  "version": "1.0.0",
+  "description": "Simple & customizable table with sort and checkbox functions in vanilla JS",
+  "main": "table-actions.js",
+  "scripts": {
+    "prettier": "prettier --write .",
+    "eslint": "eslint '*.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcmatias/table-actions.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcmatias/table-actions/issues"
+  },
+  "homepage": "https://github.com/marcmatias/table-actions#readme",
+  "devDependencies": {
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.7.1"
+  }
+}
