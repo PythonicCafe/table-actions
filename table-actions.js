@@ -29,7 +29,7 @@ class TableActions {
 
     this.options = {
       sortable: options.sortable ?? false,
-      paginable: options.paginable ?? true,
+      paginable: options.paginable ?? undefined,
       rowsPerPage: options.rowsPerPage ?? 10,
       checkableRows: options.checkableRows ?? false,
       checkableRowTdReference: options.checkableRowTdReference ?? "[data-ref]",
@@ -67,6 +67,19 @@ class TableActions {
 
     newElement(
       "button",
+      "back-all-pages",
+      ["ta-btn", "ta-btn-pag-jump"],
+      "&lt;&lt;",
+      bottomDiv
+    ).addEventListener("click", function () {
+      if (self.currentPage > 1) {
+        self.currentPage = 1;
+        self._updateTable();
+      }
+    });
+  
+    newElement(
+      "button",
       "back-page",
       ["ta-btn", "ta-btn-pag"],
       "&lt;",
@@ -78,9 +91,11 @@ class TableActions {
       }
     });
 
-    newElement("div", "numbered-buttons", [], "", bottomDiv);
-
-    this._setNumberedButtons();
+    if(this.options.paginable === "numbered-list") {
+      newElement("div", "numbered-buttons", [], "", bottomDiv);
+    } else if(this.options.paginable === "buttons-only"){
+      newElement("div", "paginable-pages", [], "", bottomDiv);
+    }
 
     newElement(
       "button",
@@ -94,11 +109,29 @@ class TableActions {
         self._updateTable();
       }
     });
+
+    newElement(
+      "button",
+      "forward-all-pages",
+      ["ta-btn", "ta-btn-pag-jump"],
+      "&gt;&gt;",
+      bottomDiv
+    ).addEventListener("click", function () {
+      if (self.currentPage < self._lastPage()) {
+        self.currentPage = self._lastPage();
+        self._updateTable();
+      }
+    });
   }
 
-  _setNumberedButtons() {
+  _setButtonsOnlyPagination() {
     const self = this;
+    const div = self.tableContainer.querySelector("#paginable-pages");
+    div.innerHTML = `${this.currentPage} - ${this._lastPage()}`;
+  }
 
+  _setNumberedListPagination() {
+    const self = this;
     const lastPage = this._lastPage();
     const currentPage = this.currentPage;
 
@@ -362,8 +395,13 @@ class TableActions {
       }
 
       // Update buttons state
-      self._setNumberedButtons();
-      self._updateButtons();
+      if(this.options.paginable === "numbered-list") {
+        self._setNumberedListPagination();
+        self._updateButtonsNumbered();
+      } else if (this.options.paginable === "buttons-only") {
+        self._setButtonsOnlyPagination();
+        self._forwardBackwardbuttons();
+      }
     } else {
       for (const row of self.tableRows) {
         tbody.appendChild(row);
@@ -371,20 +409,29 @@ class TableActions {
     }
   }
 
-  _updateButtons() {
+  _forwardBackwardbuttons() {
     const self = this;
-
     if (self.currentPage === self._lastPage()) {
       self.tableContainer.querySelector("#forward-page").disabled = true;
+      self.tableContainer.querySelector("#forward-all-pages").disabled = true;
     } else {
       self.tableContainer.querySelector("#forward-page").disabled = false;
+      self.tableContainer.querySelector("#forward-all-pages").disabled = false;
     }
 
     if (self.currentPage === 1) {
       self.tableContainer.querySelector("#back-page").disabled = true;
+      self.tableContainer.querySelector("#back-all-pages").disabled = true;
     } else {
       self.tableContainer.querySelector("#back-page").disabled = false;
+      self.tableContainer.querySelector("#back-all-pages").disabled = false;
     }
+  }
+
+  _updateButtonsNumbered() {
+    const self = this;
+
+    this._forwardBackwardbuttons();
 
     const lastPageButtonDisabled = this.tableContainer.querySelector(
       ".ta-btn-pag-numbered:disabled"

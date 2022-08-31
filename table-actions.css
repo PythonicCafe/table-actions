@@ -114,11 +114,6 @@ table.sortable th[data-asc="false"]::after {
   cursor: pointer;
 }
 
-#back-page,
-#forward-page {
-  padding: 0 1.5rem;
-}
-
 .ta-bottom-div {
   display: flex;
   justify-content: end;
@@ -129,8 +124,7 @@ table.sortable th[data-asc="false"]::after {
 }
 
 .ta-btn {
-  margin: 1rem 0;
-  padding: 0.6rem;
+  padding: .5rem;
   background-color: var(--color-base);
   color: var(--color-text);
   border-radius: 0.25rem;
@@ -138,6 +132,18 @@ table.sortable th[data-asc="false"]::after {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.ta-btn-pag {
+  margin: 0rem .5rem;
+}
+
+.ta-btn-pag-jump {
+  margin-left: 1rem;
+}
+
+.ta-btn-pag-jump:last-child {
+  margin-left: 0rem;
 }
 
 .ta-btn:hover:not(:disabled) {
@@ -150,9 +156,12 @@ table.sortable th[data-asc="false"]::after {
   cursor: auto;
 }
 
-.ta-btn-pag,
 .ta-btn-pag-numbered {
-  margin-left: 0.5rem;
+  margin-left: .5rem;
+}
+
+.ta-btn-pag-numbered:first-child {
+  margin-left: 0rem;
 }
 
 .ta-btn-pag-numbered:disabled {
@@ -164,6 +173,18 @@ table.sortable th[data-asc="false"]::after {
 .ta-bottom-div {
   display: flex;
   justify-content: end;
+  height: 2.5rem;
+  margin-top: .5rem;
+}
+
+#paginable-pages {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-heavy-extra);
+  border-radius: .25rem;
+  padding: .5rem 1rem;
+  font-size: 0.8em;
+  font-weight: 600;
 }
 
 @media (max-width: 960px) {
