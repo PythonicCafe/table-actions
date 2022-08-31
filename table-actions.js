@@ -77,7 +77,7 @@ class TableActions {
       ["ta-btn", "ta-btn-pag"],
       "&lt;",
       bottomDiv
-    ).addEventListener("click", function (event) {
+    ).addEventListener("click", function () {
       if (self.currentPage > 1) {
         self.currentPage = self.currentPage -= 1;
         self._updateTable();
@@ -94,7 +94,7 @@ class TableActions {
       ["ta-btn", "ta-btn-pag"],
       "&gt;",
       bottomDiv
-    ).addEventListener("click", function (event) {
+    ).addEventListener("click", function () {
       if (self.currentPage < self._lastPage()) {
         self.currentPage = self.currentPage += 1;
         self._updateTable();
@@ -146,7 +146,7 @@ class TableActions {
         ["ta-btn", "ta-btn-pag-numbered"],
         label,
         self.tableContainer.querySelector("#numbered-buttons")
-      ).addEventListener("click", function (event) {
+      ).addEventListener("click", function () {
         self.currentPage = pageNumber;
         self._updateTable();
       });
@@ -190,7 +190,7 @@ class TableActions {
     );
 
     // Click button show all element selected
-    button.addEventListener("click", async function (event) {
+    button.addEventListener("click", async function () {
       const checked = [];
       for (const row of self.tableRows) {
         if (row.querySelector("[type='checkbox']").checked) {
@@ -269,6 +269,7 @@ class TableActions {
       case "YYYY/MM/DD":
         val = new Date(val.replace("/", "-"));
         nextVal = new Date(nextVal.replace("/", "-"));
+        break;
 
       case "YYYY-MM-DD":
         val = new Date(val);
@@ -276,15 +277,13 @@ class TableActions {
         break;
 
       case "YYYY-MM-DD HH:MM:SS":
-        const [valDate, valHour] = val.split(" ");
-        val = new Date(valDate + "T" + valHour);
-        const [nextValDate, nextValHour] = val.split(" ");
-        val = new Date(nextValDate + "T" + nextValHour);
+        val = new Date( val.split(" ")[0] + "T" +  val.split(" ")[1]);
+        nextVal = new Date(nextVal.split(" ")[0] + "T" + nextVal.split(" ")[1]);
         break;
 
       default:
         throw new Error(`Format ${format} not recognized`);
-        break;
+        // break;
     }
 
     return [val, nextVal];
@@ -306,7 +305,7 @@ class TableActions {
       if (format) {
         [val, nextVal] = self._sortDataFormat(format, val, nextVal);
       } else {
-        const regex = /[\ \,\;\n]/g;
+        const regex = /[ ,;\n]/g;
 
         val = val.replace(regex, "").toLowerCase();
         nextVal = nextVal.replace(regex, "").toLowerCase();
