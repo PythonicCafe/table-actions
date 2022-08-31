@@ -3,12 +3,14 @@
 Simple & customizable table with sort and checkbox functions in vanilla JS
 
 ## Demo
+
 - Basic table multiple data
-    - https://marcmatias.github.io/table-actions/
+  - https://marcmatias.github.io/table-actions/
 - With checkboxes
-    - https://marcmatias.github.io/table-actions/example-large-data-table.html
+  - https://marcmatias.github.io/table-actions/example-large-data-table.html
 
 ## Features
+
 - Checkable columns with callback function to interact with selected elements
 - Paginate
 - Sortable columns
@@ -17,5 +19,6 @@ Simple & customizable table with sort and checkbox functions in vanilla JS
 - Minimal responsive template keeping actions
 
 ## Roadmap
+
 - Search field
 - API request data to populate Table

@@ -47,13 +47,7 @@ class TableActions {
     const checkableRows = this.options.checkableRows;
 
     // Set bottom-div to add buttons
-    newElement(
-      "div",
-      "bottom-div",
-      ["ta-bottom-div"],
-      "",
-      this.tableContainer
-    );
+    newElement("div", "bottom-div", ["ta-bottom-div"], "", this.tableContainer);
 
     if (checkableRows) this._setTableCheckBoxes();
     if (this.options.sortable) this._setTableSort(checkableRows);
@@ -277,13 +271,13 @@ class TableActions {
         break;
 
       case "YYYY-MM-DD HH:MM:SS":
-        val = new Date( val.split(" ")[0] + "T" +  val.split(" ")[1]);
+        val = new Date(val.split(" ")[0] + "T" + val.split(" ")[1]);
         nextVal = new Date(nextVal.split(" ")[0] + "T" + nextVal.split(" ")[1]);
         break;
 
       default:
         throw new Error(`Format ${format} not recognized`);
-        // break;
+      // break;
     }
 
     return [val, nextVal];
