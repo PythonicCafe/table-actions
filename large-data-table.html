@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Example Large Data</title>
     <link rel="stylesheet" href="./demo-purpose-styles.css" />
     <link rel="stylesheet" href="./table-actions.css" />
   </head>
@@ -3068,13 +3068,14 @@
         </div>
       </div>
     </div>
-    <script src="./table-actions.js"></script>
-    <script>
+    <script type="module">
+      import TableActions from "/dist/table-actions.js";
       const table = new TableActions("table", {
         paginable: "numbered-list",
         sortable: true,
       });
-
+    </script>
+    <script>
       function toggleTheme() {
         document.querySelector("body").classList.toggle("dark");
       }

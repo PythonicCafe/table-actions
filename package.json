@@ -2,10 +2,20 @@
   "name": "table-actions",
   "version": "1.0.0",
   "description": "Simple & customizable table with sort and checkbox functions in vanilla JS",
-  "main": "table-actions.js",
+  "module": "dist/table-actions.js",
+  "targets": {
+    "module": {
+      "source": "src/index.js",
+      "optimize": true
+    }
+  },
   "scripts": {
     "prettier": "prettier --write .",
-    "eslint": "eslint '*.js'"
+    "eslint": "eslint 'src/*.js'",
+    "dev": "parcel src/index.js",
+    "build": "parcel build --detailed-report --no-cache",
+    "watch": "parcel watch --no-source-maps",
+    "lite-server": "lite-server"
   },
   "repository": {
     "type": "git",
@@ -21,6 +31,10 @@
   "devDependencies": {
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
+    "parcel": "^2.7.0",
     "prettier": "^2.7.1"
+  },
+  "dependencies": {
+    "lite-server": "^2.6.1"
   }
 }

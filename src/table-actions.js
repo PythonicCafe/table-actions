@@ -1,20 +1,6 @@
-/*
- * TODO: Separete external functions in an external file
- * utils.js and import here
- */
-function toNormalForm(str) {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-}
+import { toNormalForm, newElement } from "./utils.js";
 
-function newElement(element, id, classList = [], label, nodeToAppend) {
-  const el = document.createElement(element);
-  el.id = id;
-  el.classList.add(...classList);
-  el.innerHTML = label;
-  return nodeToAppend.appendChild(el);
-}
-
-class TableActions {
+export class TableActions {
   constructor(element, options) {
     this.table =
       typeof element === "string" ? document.querySelector(element) : element;
@@ -77,7 +63,7 @@ class TableActions {
         self._updateTable();
       }
     });
-  
+
     newElement(
       "button",
       "back-page",
@@ -91,9 +77,9 @@ class TableActions {
       }
     });
 
-    if(this.options.paginable === "numbered-list") {
+    if (this.options.paginable === "numbered-list") {
       newElement("div", "numbered-buttons", [], "", bottomDiv);
-    } else if(this.options.paginable === "buttons-only"){
+    } else if (this.options.paginable === "buttons-only") {
       newElement("div", "paginable-pages", [], "", bottomDiv);
     }
 
@@ -395,7 +381,7 @@ class TableActions {
       }
 
       // Update buttons state
-      if(this.options.paginable === "numbered-list") {
+      if (this.options.paginable === "numbered-list") {
         self._setNumberedListPagination();
         self._updateButtonsNumbered();
       } else if (this.options.paginable === "buttons-only") {

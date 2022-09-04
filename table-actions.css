@@ -124,7 +124,7 @@ table.sortable th[data-asc="false"]::after {
 }
 
 .ta-btn {
-  padding: .5rem;
+  padding: 0.5rem;
   background-color: var(--color-base);
   color: var(--color-text);
   border-radius: 0.25rem;
@@ -135,7 +135,7 @@ table.sortable th[data-asc="false"]::after {
 }
 
 .ta-btn-pag {
-  margin: 0rem .5rem;
+  margin: 0rem 0.5rem;
 }
 
 .ta-btn-pag-jump {
@@ -157,7 +157,7 @@ table.sortable th[data-asc="false"]::after {
 }
 
 .ta-btn-pag-numbered {
-  margin-left: .5rem;
+  margin-left: 0.5rem;
 }
 
 .ta-btn-pag-numbered:first-child {
@@ -174,15 +174,15 @@ table.sortable th[data-asc="false"]::after {
   display: flex;
   justify-content: end;
   height: 2.5rem;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
 }
 
 #paginable-pages {
   display: flex;
   align-items: center;
   border: 1px solid var(--color-heavy-extra);
-  border-radius: .25rem;
-  padding: .5rem 1rem;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
   font-size: 0.8em;
   font-weight: 600;
 }
