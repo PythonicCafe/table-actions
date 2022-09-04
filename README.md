@@ -2,12 +2,29 @@
 
 Simple & customizable table with sort and checkbox functions in vanilla JS
 
-## Demo
+## Generation
 
-- Basic table multiple data
-  - https://marcmatias.github.io/table-actions/
-- With checkboxes
-  - https://marcmatias.github.io/table-actions/example-large-data-table.html
+- Download `node_modules` dependecies
+
+```bash
+yarn
+```
+
+- Generate the package local
+
+```bash
+yarn build
+# or yarn watch if you want to develop with automatic updates
+```
+
+- Run template examples local
+
+```bash
+yarn lite-server
+```
+
+- Your default browser will automatically open in `localhost:3000`
+- There is another example template in `localhost:3000/large-data-table.html`
 
 ## Features
 
