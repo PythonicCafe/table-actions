@@ -8,12 +8,12 @@ export function toNormalForm(str) {
 }
 
 // Create new document elements
-export function newElement(element, id, classList = [], label, nodeToAppend) {
+export function newElement(element, id, classList = [], label, nodeToAppend, disabled=false) {
   const el = document.createElement(element);
 
   el.id = id;
   el.classList.add(...classList);
   el.innerHTML = label;
-
+  el.disabled = disabled;
   return nodeToAppend.appendChild(el);
 }

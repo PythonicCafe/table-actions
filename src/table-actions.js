@@ -1,11 +1,14 @@
 import { toNormalForm, newElement } from "./utils.js";
 
 export class TableActions {
-  constructor(element, options) {
+  constructor(element, options = {}) {
     this.table =
       typeof element === "string" ? document.querySelector(element) : element;
 
-    this.tableContainer = this.table.parentNode.parentNode;
+    this.tableContainer = [...this.table.parentNode.classList].includes("ta-responsive") ?
+      this.table.parentNode.parentNode : this.table.parentNode;
+
+    this.tableRowsDefault = [];
 
     this.tableRows = [
       ...this.table.querySelector("tbody").querySelectorAll("tr"),
@@ -14,7 +17,8 @@ export class TableActions {
     this.currentPage = 1;
 
     this.options = {
-      sortable: options.sortable ?? false,
+      sortable: options.sortable ?? true,
+      // paginable: list or buttons
       paginable: options.paginable ?? undefined,
       rowsPerPage: options.rowsPerPage ?? 10,
       checkableRows: options.checkableRows ?? false,
@@ -42,6 +46,8 @@ export class TableActions {
       this._setPaginationButtons();
       this._updateTable();
     }
+
+    this._setMobileTableLabels();
   }
 
   // Setters
@@ -77,12 +83,11 @@ export class TableActions {
       }
     });
 
-    if (this.options.paginable === "numbered-list") {
-      newElement("div", "numbered-buttons", [], "", bottomDiv);
-    } else if (this.options.paginable === "buttons-only") {
-      newElement("div", "paginable-pages", [], "", bottomDiv);
+    if (this.options.paginable === "list") {
+      newElement("div", "ta-numbered-buttons", ["ta-numbered-buttons"], "", bottomDiv);
+    } else if (this.options.paginable === "buttons") {
+      newElement("div", "ta-paginable-pages", ["ta-paginable-pages"], "", bottomDiv);
     }
-
     newElement(
       "button",
       "forward-page",
@@ -110,9 +115,25 @@ export class TableActions {
     });
   }
 
+  _setMobileTableLabels() {
+    const self = this;
+    const tableHeads = this.table.querySelectorAll("th");
+ 
+    for (const tr of self.tableRows) {
+      for (const [key, th] of tableHeads.entries()) {
+        const trCurrent = tr.querySelectorAll("td")[key];
+        if (key === 0) {
+          trCurrent.dataset.label = "Checkbox";
+          continue;
+        }
+        trCurrent.dataset.label = th.innerHTML;
+      }
+    }
+  }
+
   _setButtonsOnlyPagination() {
     const self = this;
-    const div = self.tableContainer.querySelector("#paginable-pages");
+    const div = self.tableContainer.querySelector(".ta-paginable-pages");
     div.innerHTML = `${this.currentPage} - ${this._lastPage()}`;
   }
 
@@ -121,7 +142,7 @@ export class TableActions {
     const lastPage = this._lastPage();
     const currentPage = this.currentPage;
 
-    const div = self.tableContainer.querySelector("#numbered-buttons");
+    const div = self.tableContainer.querySelector(".ta-numbered-buttons");
     div.innerHTML = "";
 
     for (let i = 0; i < lastPage; i++) {
@@ -158,7 +179,7 @@ export class TableActions {
         `page-${pageNumber}`,
         ["ta-btn", "ta-btn-pag-numbered"],
         label,
-        self.tableContainer.querySelector("#numbered-buttons")
+        self.tableContainer.querySelector(".ta-numbered-buttons")
       ).addEventListener("click", function () {
         self.currentPage = pageNumber;
         self._updateTable();
@@ -199,7 +220,8 @@ export class TableActions {
       "interact",
       ["ta-btn"],
       "Interact",
-      self.tableContainer.querySelector("#bottom-div")
+      self.tableContainer.querySelector("#bottom-div"),
+      true
     );
 
     // Click button show all element selected
@@ -229,14 +251,18 @@ export class TableActions {
             if (event.target.checked) {
               checkbox.checked = true;
               checkbox.closest("tr").classList.add("checked");
+              button.disabled = false;
             } else {
               checkbox.checked = false;
               checkbox.closest("tr").classList.remove("checked");
+              button.disabled = true;
             }
           }
         } else {
           self.table.querySelector("thead [type='checkbox']").checked = false;
           event.target.closest("tr").classList.toggle("checked");
+          button.disabled = 
+            self.table.querySelector("[type='checkbox']:checked") ? false : true; 
         }
       });
     }
@@ -255,6 +281,10 @@ export class TableActions {
       thIndex++
     ) {
       const th = tableHeads[thIndex];
+      if (th.dataset.unsortable != undefined){
+        continue
+      };
+
       const otherTh = [];
 
       // Getting other columns to remove active icons class colors
@@ -270,33 +300,55 @@ export class TableActions {
     }
   }
 
-  _sortDataFormat(format, val, nextVal) {
-    switch (format) {
-      case "DD/MM/YYYY":
-        val = val.split("/");
-        val = new Date(val[2] + "-" + val[1] + "-" + val[0]);
-        nextVal = nextVal.split("/");
-        nextVal = new Date(nextVal[2] + "-" + nextVal[1] + "-" + nextVal[0]);
-        break;
+  _dateStringTransform(val) {
+    const res = val.split("/");
+    return res[2] + "-" + res[1] + "-" + res[0];
+  }
 
-      case "YYYY/MM/DD":
-        val = new Date(val.replace("/", "-"));
-        nextVal = new Date(nextVal.replace("/", "-"));
-        break;
+  _sortDataFormat(format, value, nextValue) {
+    const self = this;
+    let val = value.trim();
+    let nextVal = nextValue.trim();
 
-      case "YYYY-MM-DD":
-        val = new Date(val);
-        nextVal = new Date(nextVal);
-        break;
+    if(format === "DD/MM/YYYY") {
+      val = new Date(self._dateStringTransform(val));
+      nextVal = new Date(self._dateStringTransform(nextVal));
+    } else if (format === "YYYY/MM/DD") {
+      val = new Date(val.replace("/", "-"));
+      nextVal = new Date(nextVal.replace("/", "-"));
+    } else if (format === "YYYY-MM-DD") {
+      val = new Date(val);
+      nextVal = new Date(nextVal);
+    } else if (format === "DD/MM/YYYY HH:MM") {
+      const [valDate, valHour] = val.split(" ");
+      val = new Date(self._dateStringTransform(valDate) + "T" + valHour + ":00");
+      const [nextValDate, nextValHour] = nextVal.split(" ");
+      nextVal = new Date(self._dateStringTransform(nextValDate) + "T" + nextValHour + ":00");
+    } else if (format === "YYYY-MM-DD HH:MM:SS") {
+      const [valDate, valHour] = val.split(" ");
+      val = new Date(valDate + "T" + valHour);
+      const [nextValDate, nextValHour] = nextVal.split(" ");
+      nextVal = new Date(nextValDate + "T" + nextValHour);
+    } else {
+      // If format unrecognized do a generic sort
+      return self._genericSortDataFormat(val, nextVal);
+    }
 
-      case "YYYY-MM-DD HH:MM:SS":
-        val = new Date(val.split(" ")[0] + "T" + val.split(" ")[1]);
-        nextVal = new Date(nextVal.split(" ")[0] + "T" + nextVal.split(" ")[1]);
-        break;
+    return [val, nextVal];
+  }
 
-      default:
-        throw new Error(`Format ${format} not recognized`);
-      // break;
+  _genericSortDataFormat(value, nextValue) {
+    const regex = /[\ \,\;\n]/g;
+
+    let val = value.replace(regex, "").toLowerCase();
+    let nextVal = nextValue.replace(regex, "").toLowerCase();
+
+    if (!isNaN(val)) {
+      val = parseFloat(val);
+      nextVal = parseFloat(nextVal);
+    } else {
+      val = toNormalForm(val);
+      nextVal = toNormalForm(nextVal);
     }
 
     return [val, nextVal];
@@ -318,18 +370,7 @@ export class TableActions {
       if (format) {
         [val, nextVal] = self._sortDataFormat(format, val, nextVal);
       } else {
-        const regex = /[ ,;\n]/g;
-
-        val = val.replace(regex, "").toLowerCase();
-        nextVal = nextVal.replace(regex, "").toLowerCase();
-
-        if (!isNaN(val)) {
-          val = parseFloat(val);
-          nextVal = parseFloat(nextVal);
-        } else {
-          val = toNormalForm(val);
-          nextVal = toNormalForm(nextVal);
-        }
+        [val, nextVal] = self._genericSortDataFormat(val, nextVal);
       }
 
       if ((asc && val > nextVal) || (!asc && val < nextVal)) {
@@ -381,10 +422,10 @@ export class TableActions {
       }
 
       // Update buttons state
-      if (this.options.paginable === "numbered-list") {
+      if (this.options.paginable === "list") {
         self._setNumberedListPagination();
         self._updateButtonsNumbered();
-      } else if (this.options.paginable === "buttons-only") {
+      } else if (this.options.paginable === "buttons") {
         self._setButtonsOnlyPagination();
         self._forwardBackwardbuttons();
       }
