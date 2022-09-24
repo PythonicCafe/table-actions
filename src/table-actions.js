@@ -35,7 +35,7 @@ export class TableActions {
     const checkableRows = this.options.checkableRows;
 
     // Set bottom-div to add buttons
-    newElement("div", "bottom-div", ["ta-bottom-div"], "", this.tableContainer);
+    newElement("div", ["ta-bottom-div"], "", this.tableContainer);
 
     if (checkableRows) this._setTableCheckBoxes();
     if (this.options.sortable) this._setTableSort(checkableRows);
@@ -53,12 +53,11 @@ export class TableActions {
   _setPaginationButtons() {
     const self = this;
 
-    const bottomDiv = self.tableContainer.querySelector("#bottom-div");
+    const bottomDiv = self.tableContainer.querySelector(".ta-bottom-div");
 
     newElement(
       "button",
-      "back-all-pages",
-      ["ta-btn", "ta-btn-pag-jump"],
+      ["ta-btn", "ta-btn-pag-jump", "back-all-pages"],
       "&lt;&lt;",
       bottomDiv
     ).addEventListener("click", function () {
@@ -70,8 +69,7 @@ export class TableActions {
 
     newElement(
       "button",
-      "back-page",
-      ["ta-btn", "ta-btn-pag"],
+      ["ta-btn", "ta-btn-pag", "back-page"],
       "&lt;",
       bottomDiv
     ).addEventListener("click", function () {
@@ -82,14 +80,13 @@ export class TableActions {
     });
 
     if (this.options.paginable === "list") {
-      newElement("div", "ta-numbered-buttons", ["ta-numbered-buttons"], "", bottomDiv);
+      newElement("div", ["ta-numbered-buttons"], "", bottomDiv);
     } else if (this.options.paginable === "buttons") {
-      newElement("div", "ta-paginable-pages", ["ta-paginable-pages"], "", bottomDiv);
+      newElement("div", ["ta-paginable-pages"], "", bottomDiv);
     }
     newElement(
       "button",
-      "forward-page",
-      ["ta-btn", "ta-btn-pag"],
+      ["ta-btn", "ta-btn-pag", "forward-page"],
       "&gt;",
       bottomDiv
     ).addEventListener("click", function () {
@@ -101,8 +98,7 @@ export class TableActions {
 
     newElement(
       "button",
-      "forward-all-pages",
-      ["ta-btn", "ta-btn-pag-jump"],
+      ["ta-btn", "ta-btn-pag-jump", "forward-all-pages"],
       "&gt;&gt;",
       bottomDiv
     ).addEventListener("click", function () {
@@ -174,8 +170,7 @@ export class TableActions {
 
       newElement(
         "button",
-        `page-${pageNumber}`,
-        ["ta-btn", "ta-btn-pag-numbered"],
+        ["ta-btn", "ta-btn-pag-numbered", `page-${pageNumber}`],
         label,
         self.tableContainer.querySelector(".ta-numbered-buttons")
       ).addEventListener("click", function () {
@@ -215,10 +210,9 @@ export class TableActions {
     // Set interaction button
     const button = newElement(
       "button",
-      "interact",
-      ["ta-btn"],
+      ["ta-btn", "interact"],
       "Interact",
-      self.tableContainer.querySelector("#bottom-div"),
+      self.tableContainer.querySelector(".ta-bottom-div"),
       true
     );
 
@@ -437,19 +431,19 @@ export class TableActions {
   _forwardBackwardbuttons() {
     const self = this;
     if (self.currentPage === self._lastPage()) {
-      self.tableContainer.querySelector("#forward-page").disabled = true;
-      self.tableContainer.querySelector("#forward-all-pages").disabled = true;
+      self.tableContainer.querySelector(".forward-page").disabled = true;
+      self.tableContainer.querySelector(".forward-all-pages").disabled = true;
     } else {
-      self.tableContainer.querySelector("#forward-page").disabled = false;
-      self.tableContainer.querySelector("#forward-all-pages").disabled = false;
+      self.tableContainer.querySelector(".forward-page").disabled = false;
+      self.tableContainer.querySelector(".forward-all-pages").disabled = false;
     }
 
     if (self.currentPage === 1) {
-      self.tableContainer.querySelector("#back-page").disabled = true;
-      self.tableContainer.querySelector("#back-all-pages").disabled = true;
+      self.tableContainer.querySelector(".back-page").disabled = true;
+      self.tableContainer.querySelector(".back-all-pages").disabled = true;
     } else {
-      self.tableContainer.querySelector("#back-page").disabled = false;
-      self.tableContainer.querySelector("#back-all-pages").disabled = false;
+      self.tableContainer.querySelector(".back-page").disabled = false;
+      self.tableContainer.querySelector(".back-all-pages").disabled = false;
     }
   }
 
@@ -467,7 +461,7 @@ export class TableActions {
     }
 
     self.tableContainer.querySelector(
-      `#page-${self.currentPage}`
+      `.page-${self.currentPage}`
     ).disabled = true;
   }
 }
