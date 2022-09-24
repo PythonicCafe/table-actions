@@ -8,8 +8,6 @@ export class TableActions {
     this.tableContainer = [...this.table.parentNode.classList].includes("ta-responsive") ?
       this.table.parentNode.parentNode : this.table.parentNode;
 
-    this.tableRowsDefault = [];
-
     this.tableRows = [
       ...this.table.querySelector("tbody").querySelectorAll("tr"),
     ];

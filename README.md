@@ -33,9 +33,14 @@ yarn lite-server
 - Sortable columns
 - Sort by date
 - Theme light and dark
-- Minimal responsive template keeping actions
+- Mobile theme options full responsive
 
 ## Roadmap
 
 - Search field
 - API request data to populate Table
+
+## References
+
+### Theme and mobile reference
+- [Responsive and sortable tables](https://codepen.io/mlegakis/pen/jBYPGr)
