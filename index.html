@@ -40,7 +40,7 @@
         <tbody>
           <tr>
             <td data-ref="1">1</td>
-            <td>árlindo</td>
+            <td><a href="#!">árlindo</a></td>
             <td>silent</td>
             <td>lunch</td>
             <td>03/01/1998</td>
@@ -401,8 +401,9 @@
     </section>
     <script type="module">
       import { TableActions } from "/dist/table-actions.min.js";
-      const table = new TableActions("table", {
+      new TableActions("table", {
         sortable: true,
+        searchable: true,
         paginable: "buttons",
         checkableRows: true,
         checkableRowTdReference: "[data-ref]",

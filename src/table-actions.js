@@ -13,6 +13,7 @@ export class TableActions {
     ];
 
     this.options = {
+      searchable: options.searchable ?? false,
       sortable: options.sortable ?? true,
       // paginable: list or buttons
       paginable: options.paginable ?? undefined,
@@ -47,46 +48,58 @@ export class TableActions {
     }
 
     this._setMobileTableLabels();
-    this._setSearchField();
+
+    if (this.options.searchable) {
+      this._setSearchField();
+    }
   }
 
   // Setters
   _setSearchField() {
     const self = this;
+    self.defaultStateTableRows = [...self.tableRows];
 
     newElement(
       "input",
       [],
       "Pesquisa",
       this.tableContainer,
-      { 
-        prependEl: this.table, 
+      {
+        prependEl: this.table,
         outsideElement: {
           element: "div",
           classList: [ "ta-search-container" ],
-        } 
+        }
       }
-    ).addEventListener("keyup", function () { 
+    ).addEventListener("keyup", function () {
       const search = this.querySelector("input").value;
       const result = [];
+      let thCheckbox = self.table.querySelector("th>[type='checkbox']");
 
-      if (!self.defaultStateTableRows) {
-        self.defaultStateTableRows = [...self.tableRows];
+      if (thCheckbox) {
+        thCheckbox.disabled = false;
       }
 
       self.tableRows = self.defaultStateTableRows;
 
-      if (self.options.paginable) { 
-        self.currentPage = 1;
-      }
-
       if (search.length > 2) {
+
+        if (self.options.paginable) {
+          self.currentPage = 1;
+        }
         for (const row of self.tableRows) {
           const tds = row.querySelectorAll("td");
 
           for (const td of tds) {
-            if (td.innerHTML.startsWith(this.querySelector("input").value)) {
-              result.push(row); 
+            let text = td.innerHTML;
+
+            const anchor = td.querySelector("a");
+            if (anchor) {
+              text = anchor.innerHTML;
+            }
+
+            if (text.startsWith(this.querySelector("input").value)) {
+              result.push(row);
               break;
             }
           }
@@ -100,11 +113,17 @@ export class TableActions {
           td.innerHTML = "Nenhum elemento a ser exibido";
           tr.appendChild(td);
           result.push(tr);
+
+          if (thCheckbox) {
+            thCheckbox.disabled = true;
+          }
         }
 
         self.tableRows = result;
       }
+
       self._updateTable();
+
       self._butonCheckableRowsUpdate();
     })
   }
@@ -171,11 +190,11 @@ export class TableActions {
   _setMobileTableLabels() {
     const self = this;
     const tableHeads = this.table.querySelectorAll("th");
- 
+
     for (const tr of self.tableRows) {
       for (const [key, th] of tableHeads.entries()) {
         const trCurrent = tr.querySelectorAll("td")[key];
-        if (key === 0) {
+        if (key === 0 && self.options.checkableRows) {
           trCurrent.dataset.label = "Checkbox";
           continue;
         }
@@ -305,7 +324,7 @@ export class TableActions {
             }
             button.disabled = false;
           } else {
-            for (const el of self.tableRows) {     
+            for (const el of self.tableRows) {
               const checkbox = el.querySelector("[type='checkbox']");
               checkbox.checked = false;
               checkbox.closest("tr").classList.remove("checked");
@@ -322,7 +341,11 @@ export class TableActions {
   }
 
   _butonCheckableRowsUpdate() {
-    this.tableContainer.querySelector(".interact").disabled = 
+    if (!this.options.checkableRows) {
+      return;
+    }
+
+    this.tableContainer.querySelector(".interact").disabled =
       !this.tableRows.find(el => el.querySelector("[type='checkbox']:checked"));
   }
 
@@ -469,8 +492,8 @@ export class TableActions {
     const self = this;
     const tbody = self.table.querySelector("tbody");
 
+    tbody.innerHTML = "";
     if (self.options.paginable) {
-      tbody.innerHTML = "";
       for (
         let i = self._currenRow();
         i < self._lastRow() && i < self.tableRows.length;
@@ -480,7 +503,7 @@ export class TableActions {
       }
 
       // Update buttons state
-      if (this.options.paginable === "list" && this._last) {
+      if (this.options.paginable === "list" && this.hasPages) {
         self._setNumberedListPagination();
         self._updateButtonsNumbered();
       } else if (this.options.paginable === "buttons" && this.hasPages) {
