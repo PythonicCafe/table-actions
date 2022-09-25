@@ -1,4 +1,4 @@
-import { toNormalForm, newElement } from "./utils.js";
+import { toNormalForm, newElement, createElementWithClassList } from "./utils.js";
 
 export class TableActions {
   constructor(element, options = {}) {
@@ -11,8 +11,6 @@ export class TableActions {
     this.tableRows = [
       ...this.table.querySelector("tbody").querySelectorAll("tr"),
     ];
-
-    this.currentPage = 1;
 
     this.options = {
       sortable: options.sortable ?? true,
@@ -28,6 +26,9 @@ export class TableActions {
         },
     };
 
+    this.hasPages = this._lastPage() > 1;
+    this.currentPage = 1;
+
     this._init();
   }
 
@@ -40,15 +41,73 @@ export class TableActions {
     if (checkableRows) this._setTableCheckBoxes();
     if (this.options.sortable) this._setTableSort(checkableRows);
 
-    if (this.options.paginable && this._lastPage() > 1) {
+    if (this.options.paginable && this.hasPages) {
       this._setPaginationButtons();
       this._updateTable();
     }
 
     this._setMobileTableLabels();
+    this._setSearchField();
   }
 
   // Setters
+  _setSearchField() {
+    const self = this;
+
+    newElement(
+      "input",
+      [],
+      "Pesquisa",
+      this.tableContainer,
+      { 
+        prependEl: this.table, 
+        outsideElement: {
+          element: "div",
+          classList: [ "ta-search-container" ],
+        } 
+      }
+    ).addEventListener("keyup", function () { 
+      const search = this.querySelector("input").value;
+      const result = [];
+
+      if (!self.defaultStateTableRows) {
+        self.defaultStateTableRows = [...self.tableRows];
+      }
+
+      self.tableRows = self.defaultStateTableRows;
+
+      if (self.options.paginable) { 
+        self.currentPage = 1;
+      }
+
+      if (search.length > 2) {
+        for (const row of self.tableRows) {
+          const tds = row.querySelectorAll("td");
+
+          for (const td of tds) {
+            if (td.innerHTML.startsWith(this.querySelector("input").value)) {
+              result.push(row); 
+              break;
+            }
+          }
+        }
+
+        if (!result.length) {
+          const tr = createElementWithClassList("tr");
+          const td = createElementWithClassList("td", ["ta-td-message"]);
+          td.dataset.label = "Message";
+          td.colSpan = self.table.querySelectorAll("th").length;
+          td.innerHTML = "Nenhum elemento a ser exibido";
+          tr.appendChild(td);
+          result.push(tr);
+        }
+
+        self.tableRows = result;
+      }
+      self._updateTable();
+      self._butonCheckableRowsUpdate();
+    })
+  }
 
   _setPaginationButtons() {
     const self = this;
@@ -213,7 +272,7 @@ export class TableActions {
       ["ta-btn", "interact"],
       "Interact",
       self.tableContainer.querySelector(".ta-bottom-div"),
-      true
+      { disabled:true }
     );
 
     // Click button show all element selected
@@ -238,26 +297,33 @@ export class TableActions {
         const thead = event.target.closest("thead");
 
         if (thead) {
-          for (const el of self.tableRows) {
-            const checkbox = el.querySelector("[type='checkbox']");
-            if (event.target.checked) {
+          if (event.target.checked) {
+            for (const el of self.tableRows) {
+              const checkbox = el.querySelector("[type='checkbox']");
               checkbox.checked = true;
               checkbox.closest("tr").classList.add("checked");
-              button.disabled = false;
-            } else {
+            }
+            button.disabled = false;
+          } else {
+            for (const el of self.tableRows) {     
+              const checkbox = el.querySelector("[type='checkbox']");
               checkbox.checked = false;
               checkbox.closest("tr").classList.remove("checked");
-              button.disabled = true;
             }
+            button.disabled = true;
           }
         } else {
           self.table.querySelector("thead [type='checkbox']").checked = false;
           event.target.closest("tr").classList.toggle("checked");
-          button.disabled = 
-            self.table.querySelector("[type='checkbox']:checked") ? false : true; 
+          self._butonCheckableRowsUpdate();
         }
       });
     }
+  }
+
+  _butonCheckableRowsUpdate() {
+    this.tableContainer.querySelector(".interact").disabled = 
+      !this.tableRows.find(el => el.querySelector("[type='checkbox']:checked"));
   }
 
   _setTableSort(checkableRows) {
@@ -414,10 +480,10 @@ export class TableActions {
       }
 
       // Update buttons state
-      if (this.options.paginable === "list") {
+      if (this.options.paginable === "list" && this._last) {
         self._setNumberedListPagination();
         self._updateButtonsNumbered();
-      } else if (this.options.paginable === "buttons") {
+      } else if (this.options.paginable === "buttons" && this.hasPages) {
         self._setButtonsOnlyPagination();
         self._forwardBackwardbuttons();
       }
