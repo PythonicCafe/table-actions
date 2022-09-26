@@ -19,12 +19,14 @@ export class TableActions {
       paginable: options.paginable ?? undefined,
       rowsPerPage: options.rowsPerPage ?? 10,
       checkableRows: options.checkableRows ?? false,
-      checkableRowTdReference: options.checkableRowTdReference ?? "[data-ref]",
+      checkableRowTrReference: options.checkableRowTrReference ?? "data-ref",
+      alreadyAddedElements: options.alreadyAddedElements ?? undefined,
       checkedElementsCallback:
         options.checkedElementsCallback ??
         function (checkedElements) {
           console.log(checkedElements);
         },
+      checkableButtonLabel: options.checkableButtonLabel ?? "Interact"
     };
 
     this.hasPages = this._lastPage() > 1;
@@ -98,7 +100,13 @@ export class TableActions {
               text = anchor.innerHTML;
             }
 
-            if (text.startsWith(this.querySelector("input").value)) {
+            if (
+              text.trim()
+                .toLowerCase()
+                .startsWith(
+                  this.querySelector("input").value.toLowerCase()
+                )
+            ) {
               result.push(row);
               break;
             }
@@ -261,13 +269,20 @@ export class TableActions {
   _setTableCheckBoxes() {
     // Get class reference to actual table
     const self = this;
+    const alreadyAdded = this.options.alreadyAddedElements;
 
-    function tableCheckboxInsert(elementType, classes = []) {
+    function tableCheckboxInsert(elementType, classes = [], disabled = false) {
       const element = document.createElement(elementType);
       const input = document.createElement("input");
 
       if (classes.length) {
         element.classList.add(...classes);
+      }
+
+      if (disabled) { 
+        input.checked = true;
+        input.disabled = disabled;
+        input.title = "Objeto já está adicionado";
       }
 
       input.type = "checkbox";
@@ -276,20 +291,28 @@ export class TableActions {
       return element;
     }
 
+    const tableTrs = self.table.querySelectorAll("tbody>tr");
     // Add table header checkbox
     const tr = self.table.querySelector("thead>tr");
     tr.prepend(tableCheckboxInsert("th", ["ta-checkbox-column"]));
 
     // Add table rows checkbox
-    for (const tr of self.table.querySelectorAll("tbody>tr")) {
-      tr.prepend(tableCheckboxInsert("td", ["ta-checkbox-row"]));
+    for (const tr of tableTrs) {
+      let newTdCheckbox;                                                                                                                                                 
+      if (alreadyAdded && alreadyAdded.includes(tr.dataset.rowId)) {
+        newTdCheckbox = tableCheckboxInsert("td", ["ta-checkbox-row"], true);
+      } else {
+        newTdCheckbox = tableCheckboxInsert("td", ["ta-checkbox-row"]);
+      }   
+
+      tr.prepend(newTdCheckbox);
     }
 
     // Set interaction button
     const button = newElement(
       "button",
       ["ta-btn", "interact"],
-      "Interact",
+      self.options.checkableButtonLabel,
       self.tableContainer.querySelector(".ta-bottom-div"),
       { disabled:true }
     );
@@ -297,15 +320,29 @@ export class TableActions {
     // Click button show all element selected
     button.addEventListener("click", async function () {
       const checked = [];
-      for (const row of self.tableRows) {
-        if (row.querySelector("[type='checkbox']").checked) {
+      for (const tr of self.tableRows) {
+        const checkbox = tr.querySelector("[type='checkbox']");
+        if (checkbox.checked && !checkbox.disabled) {
           checked.push(
-            row.querySelector(self.options.checkableRowTdReference).dataset.ref
+            tr.getAttribute(self.options.checkableRowTrReference)
           );
         }
       }
 
-      await self.options.checkedElementsCallback(checked);
+      if (
+        self.options.checkedElementsCallback !== undefined &&
+        typeof self.options.checkedElementsCallback === "function"
+      ) {
+        const AddedObjects = await self.options.checkedElementsCallback(
+          checked
+        );
+        for (const tr of tableTrs) {
+          if (AddedObjects && AddedObjects.includes(tr.getAttribute(self.options.checkableRowTrReference))) {
+            tr.querySelector("input").disabled = true;
+          }
+        }
+      }
+
     });
 
     // Table checkboxes logic, check all and check one by one
