@@ -11,8 +11,8 @@
       "optimize": true
     },
     "css": {
-      "source" : "table-actions.css",
-      "optimize" : true
+      "source": "table-actions.css",
+      "optimize": true
     }
   },
   "scripts": {
@@ -42,10 +42,8 @@
   "devDependencies": {
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
+    "lite-server": "^2.6.1",
     "parcel": "^2.7.0",
     "prettier": "^2.7.1"
-  },
-  "dependencies": {
-    "lite-server": "^2.6.1"
   }
 }

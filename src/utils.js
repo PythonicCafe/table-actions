@@ -9,7 +9,7 @@ export function toNormalForm(str) {
 
 export function createElementWithClassList(element, classList = []) {
   const el = document.createElement(element);
-  if (classList.length){ 
+  if (classList.length){
     el.classList.add(...classList);
   }
   return el;
@@ -24,8 +24,8 @@ export function newElement(
   options = {
     disabled: false,
     prependEl: undefined,
-    outsideElement: { element: undefined, classList: [] 
-    } 
+    outsideElement: { element: undefined, classList: []
+    }
   }) {
 
   let el = createElementWithClassList(element, classList);
