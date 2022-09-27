@@ -13,20 +13,20 @@ export class TableActions {
     ];
 
     this.options = {
-      searchable: options.searchable ?? false,
-      sortable: options.sortable ?? true,
+      searchable: options.searchable || false,
+      sortable: options.sortable || true,
       // paginable: list or buttons
-      paginable: options.paginable ?? undefined,
-      rowsPerPage: options.rowsPerPage ?? 10,
-      checkableRows: options.checkableRows ?? false,
-      checkableRowTrReference: options.checkableRowTrReference ?? "data-ref",
-      alreadyAddedElements: options.alreadyAddedElements ?? undefined,
+      paginable: options.paginable,
+      rowsPerPage: options.rowsPerPage || 10,
+      checkableRows: options.checkableRows || false,
+      checkableRowTrReference: options.checkableRowTrReference || "data-ref",
+      alreadyAddedElements: options.alreadyAddedElements,
       checkedElementsCallback:
-        options.checkedElementsCallback ??
+        options.checkedElementsCallback ||
         function (checkedElements) {
           console.log(checkedElements);
         },
-      checkableButtonLabel: options.checkableButtonLabel ?? "Interact"
+      checkableButtonLabel: options.checkableButtonLabel || "Interact"
     };
 
     this.hasPages = this._lastPage() > 1;
