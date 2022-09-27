@@ -13,13 +13,13 @@ export class TableActions {
     ];
 
     this.options = {
-      searchable: options.searchable || false,
+      searchable: options.searchable || true,
       sortable: options.sortable || true,
       // paginable: list or buttons
-      paginable: options.paginable,
+      paginable: options.paginable || "buttons",
       rowsPerPage: options.rowsPerPage || 10,
       checkableRows: options.checkableRows || false,
-      checkableRowTrReference: options.checkableRowTrReference || "data-ref",
+      checkableRowTrReference: options.checkableRowTrReference || "data-row-id",
       alreadyAddedElements: options.alreadyAddedElements,
       checkedElementsCallback:
         options.checkedElementsCallback ||
@@ -279,7 +279,7 @@ export class TableActions {
         element.classList.add(...classes);
       }
 
-      if (disabled) { 
+      if (disabled) {
         input.checked = true;
         input.disabled = disabled;
         input.title = "Objeto já está adicionado";
@@ -298,12 +298,12 @@ export class TableActions {
 
     // Add table rows checkbox
     for (const tr of tableTrs) {
-      let newTdCheckbox;                                                                                                                                                 
+      let newTdCheckbox;
       if (alreadyAdded && alreadyAdded.includes(tr.dataset.rowId)) {
         newTdCheckbox = tableCheckboxInsert("td", ["ta-checkbox-row"], true);
       } else {
         newTdCheckbox = tableCheckboxInsert("td", ["ta-checkbox-row"]);
-      }   
+      }
 
       tr.prepend(newTdCheckbox);
     }
@@ -423,59 +423,52 @@ export class TableActions {
     return res[2] + "-" + res[1] + "-" + res[0];
   }
 
-  _sortDataFormat(format, value, nextValue) {
+  _sortDataFormat(format, value) {
     const self = this;
     let val = value.trim();
-    let nextVal = nextValue.trim();
+    let result = "", valDate, valHour;
 
-    if(format === "DD/MM/YYYY") {
-      val = new Date(self._dateStringTransform(val));
-      nextVal = new Date(self._dateStringTransform(nextVal));
-    } else if (format === "YYYY/MM/DD") {
-      val = new Date(val.replace("/", "-"));
-      nextVal = new Date(nextVal.replace("/", "-"));
-    } else if (format === "YYYY-MM-DD") {
-      val = new Date(val);
-      nextVal = new Date(nextVal);
-    } else if (format === "DD/MM/YYYY HH:MM") {
-      const [valDate, valHour] = val.split(" ");
-      val = new Date(self._dateStringTransform(valDate) + "T" + valHour + ":00");
-      const [nextValDate, nextValHour] = nextVal.split(" ");
-      nextVal = new Date(self._dateStringTransform(nextValDate) + "T" + nextValHour + ":00");
-    } else if (format === "YYYY-MM-DD HH:MM:SS") {
-      const [valDate, valHour] = val.split(" ");
-      val = new Date(valDate + "T" + valHour);
-      const [nextValDate, nextValHour] = nextVal.split(" ");
-      nextVal = new Date(nextValDate + "T" + nextValHour);
-    } else {
-      // If format unrecognized do a generic sort
-      return self._genericSortDataFormat(val, nextVal);
+    switch (format) {
+      case "DD/MM/YYYY":
+        result = new Date(self._dateStringTransform(val));
+        break;
+      case "YYYY/MM/DD":
+        result = new Date(val.replace("/", "-"));
+        break;
+      case "YYYY-MM-DD":
+        result = new Date(val);
+        break;
+      case "DD/MM/YYYY HH:MM":
+        [valDate, valHour] = val.split(" ");
+        result = new Date(self._dateStringTransform(valDate) + "T" + valHour + ":00");
+        break;
+      case "YYYY-MM-DD HH:MM:SS":
+        [valDate, valHour] = val.split(" ");
+        result = new Date(valDate + "T" + valHour);
+        break;
+      case "currency-real":
+      case "numeric(15, 2)":
+        result = +val.replace(/[\.\,R\$\s]/g, "");
+        break;
+      default:
+        result = self._genericSortDataFormat(val);
+        break;
     }
 
-    return [val, nextVal];
+    return result;
   }
 
-  _genericSortDataFormat(value, nextValue) {
-    const regex = /[\ \,\;\n]/g;
-
+  _genericSortDataFormat(value) {
+    const regex = /[\.\,\;\s\n]/g;
     let val = value.replace(regex, "").toLowerCase();
-    let nextVal = nextValue.replace(regex, "").toLowerCase();
 
-    if (!isNaN(val)) {
-      val = parseFloat(val);
-      nextVal = parseFloat(nextVal);
-    } else {
-      val = toNormalForm(val);
-      nextVal = toNormalForm(nextVal);
-    }
-
-    return [val, nextVal];
+    return isNaN(val) ? toNormalForm(val) : parseFloat(val);
   }
 
   _sortTable(th, thIndex, otherThs) {
     const self = this;
     const asc = th.dataset.asc ? !JSON.parse(th.dataset.asc) : true;
-    const format = th.dataset.format;
+    const format = th.dataset.format || th.dataset.type;
 
     for (const otherTh of otherThs) {
       otherTh.removeAttribute("data-asc");
@@ -486,9 +479,11 @@ export class TableActions {
       nextVal = nextVal.querySelectorAll("td")[thIndex].innerHTML;
 
       if (format) {
-        [val, nextVal] = self._sortDataFormat(format, val, nextVal);
+        val = self._sortDataFormat(format, val);
+        nextVal = self._sortDataFormat(format, nextVal);
       } else {
-        [val, nextVal] = self._genericSortDataFormat(val, nextVal);
+        val = self._genericSortDataFormat(val);
+        nextVal = self._genericSortDataFormat(nextVal);
       }
 
       if ((asc && val > nextVal) || (!asc && val < nextVal)) {
