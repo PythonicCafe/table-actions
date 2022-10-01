@@ -1,6 +1,6 @@
 # Table actions
 
-Simple & customizable table with sort and checkbox functions in vanilla JS
+Simple & customizable table with search, sort, pagination and checkbox functions in vanilla JS
 
 ## Generation
 
@@ -34,10 +34,10 @@ yarn lite-server
 - Sort by date
 - Theme light and dark
 - Mobile theme options full responsive
+- Search field
 
 ## Roadmap
 
-- Search field
 - API request data to populate Table
 
 ## References
