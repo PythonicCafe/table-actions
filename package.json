@@ -32,7 +32,11 @@
     "css/table-actions.min.css",
     "README.md"
   ],
-  "keywords": [],
+    "keywords": [
+    "table",
+    "pagination",
+    "sortable"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
