@@ -1,12 +1,21 @@
-import { toNormalForm, newElement, createElementWithClassList } from "./utils.js";
+import {
+  toNormalForm,
+  newElement,
+  createElementWithClassList,
+} from "./utils.js";
 
 export class TableActions {
   constructor(element, options = {}) {
     this.table =
       typeof element === "string" ? document.querySelector(element) : element;
 
-    this.tableContainer = [...this.table.parentNode.classList].includes("ta-responsive") ?
-      this.table.parentNode.parentNode : this.table.parentNode;
+    this.taResponsiveContainer = [...this.table.parentNode.classList].includes(
+      "ta-responsive"
+    );
+
+    this.tableContainer = this.taResponsiveContainer
+      ? this.table.parentNode.parentNode
+      : this.table.parentNode;
 
     this.tableRows = [
       ...this.table.querySelector("tbody").querySelectorAll("tr"),
@@ -26,7 +35,7 @@ export class TableActions {
         function (checkedElements) {
           console.log(checkedElements);
         },
-      checkableButtonLabel: options.checkableButtonLabel || "Interact"
+      checkableButtonLabel: options.checkableButtonLabel || "Interact",
     };
 
     this.hasPages = this._lastPage() > 1;
@@ -61,19 +70,15 @@ export class TableActions {
     const self = this;
     self.defaultStateTableRows = [...self.tableRows];
 
-    newElement(
-      "input",
-      [],
-      "Pesquisa",
-      this.tableContainer,
-      {
-        prependEl: this.table,
-        outsideElement: {
-          element: "div",
-          classList: [ "ta-search-container" ],
-        }
-      }
-    ).addEventListener("keyup", function () {
+    newElement("input", [], "Pesquisa", this.tableContainer, {
+      prependEl: this.taResponsiveContainer
+        ? this.table.parentNode
+        : this.table,
+      outsideElement: {
+        element: "div",
+        classList: ["ta-search-container"],
+      },
+    }).addEventListener("keyup", function () {
       const search = this.querySelector("input").value;
       const result = [];
       let thCheckbox = self.table.querySelector("th>[type='checkbox']");
@@ -85,7 +90,6 @@ export class TableActions {
       self.tableRows = self.defaultStateTableRows;
 
       if (search.length > 2) {
-
         if (self.options.paginable) {
           self.currentPage = 1;
         }
@@ -101,11 +105,10 @@ export class TableActions {
             }
 
             if (
-              text.trim()
+              text
+                .trim()
                 .toLowerCase()
-                .startsWith(
-                  this.querySelector("input").value.toLowerCase()
-                )
+                .startsWith(this.querySelector("input").value.toLowerCase())
             ) {
               result.push(row);
               break;
@@ -133,7 +136,7 @@ export class TableActions {
       self._updateTable();
 
       self._butonCheckableRowsUpdate();
-    })
+    });
   }
 
   _setPaginationButtons() {
@@ -314,7 +317,7 @@ export class TableActions {
       ["ta-btn", "interact"],
       self.options.checkableButtonLabel,
       self.tableContainer.querySelector(".ta-bottom-div"),
-      { disabled:true }
+      { disabled: true }
     );
 
     // Click button show all element selected
@@ -323,9 +326,7 @@ export class TableActions {
       for (const tr of self.tableRows) {
         const checkbox = tr.querySelector("[type='checkbox']");
         if (checkbox.checked && !checkbox.disabled) {
-          checked.push(
-            tr.getAttribute(self.options.checkableRowTrReference)
-          );
+          checked.push(tr.getAttribute(self.options.checkableRowTrReference));
         }
       }
 
@@ -337,12 +338,16 @@ export class TableActions {
           checked
         );
         for (const tr of tableTrs) {
-          if (AddedObjects && AddedObjects.includes(tr.getAttribute(self.options.checkableRowTrReference))) {
+          if (
+            AddedObjects &&
+            AddedObjects.includes(
+              tr.getAttribute(self.options.checkableRowTrReference)
+            )
+          ) {
             tr.querySelector("input").disabled = true;
           }
         }
       }
-
     });
 
     // Table checkboxes logic, check all and check one by one
@@ -383,7 +388,9 @@ export class TableActions {
     }
 
     this.tableContainer.querySelector(".interact").disabled =
-      !this.tableRows.find(el => el.querySelector("[type='checkbox']:checked"));
+      !this.tableRows.find((el) =>
+        el.querySelector("[type='checkbox']:checked")
+      );
   }
 
   _setTableSort(checkableRows) {
@@ -399,9 +406,9 @@ export class TableActions {
       thIndex++
     ) {
       const th = tableHeads[thIndex];
-      if (th.dataset.unsortable != undefined){
-        continue
-      };
+      if (th.dataset.unsortable != undefined) {
+        continue;
+      }
 
       const otherTh = [];
 
@@ -426,7 +433,9 @@ export class TableActions {
   _sortDataFormat(format, value) {
     const self = this;
     let val = value.trim();
-    let result = "", valDate, valHour;
+    let result = "",
+      valDate,
+      valHour;
 
     switch (format) {
       case "DD/MM/YYYY":
@@ -440,7 +449,9 @@ export class TableActions {
         break;
       case "DD/MM/YYYY HH:MM":
         [valDate, valHour] = val.split(" ");
-        result = new Date(self._dateStringTransform(valDate) + "T" + valHour + ":00");
+        result = new Date(
+          self._dateStringTransform(valDate) + "T" + valHour + ":00"
+        );
         break;
       case "YYYY-MM-DD HH:MM:SS":
         [valDate, valHour] = val.split(" ");

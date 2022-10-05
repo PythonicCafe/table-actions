@@ -12,16 +12,14 @@
     <div class="theme-toggle">
       <span onclick="toggleTheme()">
         <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-circle-half"
-            viewBox="0 0 16 16"
-            >
-            <path
-                d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"
-                />
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-circle-half"
+          viewBox="0 0 16 16"
+        >
+          <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z" />
         </svg>
       </span>
     </div>
@@ -257,10 +255,9 @@
             <td>add</td>
             <td>
               onlinetools Lorem ipsum dolor sit amet consectetur adipisicing
-              elit. Soluta distinctio voluptatem perspiciatis eos, velit
-              saepe nisi sequi ad autem corrupti ducimus asperiores
-              inventore aspernatur id quasi reprehenderit, assumenda itaque
-              eius?
+              elit. Soluta distinctio voluptatem perspiciatis eos, velit saepe
+              nisi sequi ad autem corrupti ducimus asperiores inventore
+              aspernatur id quasi reprehenderit, assumenda itaque eius?
             </td>
             <td>stood</td>
             <td>loud</td>
@@ -3063,17 +3060,18 @@
           </tr>
         </tbody>
       </table>
-      <script type="module">
-        import { TableActions } from "/dist/table-actions.min.js";
-      const table = new TableActions("table", { 
+    </div>
+    <script type="module">
+      import { TableActions } from "/dist/table-actions.min.js";
+      const table = new TableActions("table", {
         sortable: false,
         paginable: "list",
       });
-      </script>
-      <script>
-        function toggleTheme() {
-          document.querySelector("body").classList.toggle("dark");
-        }
-      </script>
+
+      function toggleTheme() {
+        document.querySelector("body").classList.toggle("dark");
+      }
+    </script>
+    <script src="./demo-purpose.js"></script>
   </body>
 </html>

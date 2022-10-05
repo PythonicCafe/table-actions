@@ -1,5 +1,5 @@
 :root {
-  --color-ta-example-bg: #FFF;
+  --color-ta-example-bg: #fff;
 }
 
 .dark {
@@ -15,7 +15,6 @@ body {
   -webkit-font-smoothing: antialiased;
   padding: 1em;
 }
-
 
 #result {
   border: 1px solid var(--color-ta-secondary);

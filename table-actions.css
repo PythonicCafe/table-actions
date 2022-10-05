@@ -1,12 +1,12 @@
 :root {
-  --color-ta-primary: #0085A6;
-  --color-ta-secondary: #DDD;
-  --color-ta-light: #FFF;
+  --color-ta-primary: #0085a6;
+  --color-ta-secondary: #ddd;
+  --color-ta-light: #fff;
   --color-ta-darker: #333;
-  --color-ta-dark: #F9F9F9;
-  --color-ta-btn: #FFF;
+  --color-ta-dark: #f9f9f9;
+  --color-ta-btn: #fff;
   --color-ta-btn-bg: var(--color-ta-primary);
-  --color-ta-btn-disabled: #CCC;
+  --color-ta-btn-disabled: #ccc;
   --color-ta-btn-bg-disabled: var(--color-ta-dark);
   --color-ta-btn-bg-hover: #00738f;
   --icon-ta-chevron-up: url("data:image/svg+xml,<svg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z'/></svg>");
@@ -15,12 +15,12 @@
 }
 
 .dark {
-  --color-ta-primary: #EEE;
-  --color-ta-secondary: #8B8B8B;
-  --color-ta-light: #3B3B3B;
-  --color-ta-darker: #F7F7F7;
+  --color-ta-primary: #eee;
+  --color-ta-secondary: #8b8b8b;
+  --color-ta-light: #3b3b3b;
+  --color-ta-darker: #f7f7f7;
   --color-ta-dark: #505050;
-  --color-ta-btn: #FFF;
+  --color-ta-btn: #fff;
   --color-ta-btn-bg: var(--color-ta-dark);
   --color-ta-btn-disabled: var(--color-ta-secondary);
   --color-ta-btn-bg-disabled: var(--color-ta-dark);
@@ -56,12 +56,12 @@
 
 .ta thead th:first-child {
   border-left: 1px solid var(--color-ta-secondary);
-  border-top-left-radius: .25rem;
+  border-top-left-radius: 0.25rem;
 }
 
 .ta thead th:last-child {
   border-right: 1px solid var(--color-ta-secondary);
-  border-top-right-radius: .25rem;
+  border-top-right-radius: 0.25rem;
 }
 
 .ta tbody tr {
@@ -118,15 +118,16 @@ caption {
   background-color: var(--color-ta-secondary);
   right: 0.4rem;
   position: absolute;
+  height: 0.6rem;
+  width: 0.6rem;
 }
 
 .ta.sortable th:not(.ta-checkbox-column, [data-unsortable=""])::before {
   content: " ";
   -webkit-mask-image: var(--icon-ta-chevron-up);
   mask-image: var(--icon-ta-chevron-up);
+  mask-repeat: no-repeat;
   bottom: 50%;
-  height: 0.6rem;
-  width: 0.6rem;
 }
 
 .ta.sortable th:not(.ta-checkbox-column, [data-unsortable=""])::after {
@@ -134,8 +135,6 @@ caption {
   -webkit-mask-image: var(--icon-ta-chevron-down);
   mask-image: var(--icon-ta-chevron-down);
   top: 50%;
-  height: 0.6rem;
-  width: 0.6rem;
 }
 
 .ta.sortable th[data-asc="true"]::before,
@@ -165,7 +164,6 @@ caption {
 /* Responsive table full */
 
 @media (max-width: 992px) {
-
   .ta-responsive-full thead tr,
   .ta-responsive-full tfoot tr {
     display: none;
@@ -188,7 +186,7 @@ caption {
   }
 
   .ta-responsive-full tr {
-    border-radius: .25rem;
+    border-radius: 0.25rem;
   }
 
   .ta-responsive-full td {
@@ -209,8 +207,8 @@ caption {
   .ta-responsive-full td:first-child {
     background-color: var(--color-ta-dark);
     border: 1px solid var(--color-ta-secondary);
-    border-top-left-radius: .25rem;
-    border-top-right-radius: .25rem;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
     color: var(--color-ta-darker);
     font-weight: bold;
   }
@@ -235,6 +233,15 @@ caption {
   .ta-td-message {
     text-align: initial;
   }
+
+  .ta-responsive
+    .ta.sortable
+    th:not(.ta-checkbox-column, [data-unsortable=""])::before,
+  .ta-responsive
+    .ta.sortable
+    th:not(.ta-checkbox-column, [data-unsortable=""])::after {
+    right: 0.1rem;
+  }
 }
 
 @media (max-width: 360px) {
@@ -255,13 +262,13 @@ caption {
   margin: 1rem 0rem;
   display: flex;
   justify-content: end;
-  gap: .5rem;
+  gap: 0.5rem;
 }
 
 .ta-numbered-buttons {
   display: flex;
   align-items: center;
-  gap: .5rem;
+  gap: 0.5rem;
 }
 
 .ta-paginable-pages {
@@ -271,7 +278,7 @@ caption {
   color: var(--color-ta-darker);
   border-radius: 0.25rem;
   padding: 0rem 1rem;
-  font-size: .85em;
+  font-size: 0.85em;
   font-weight: 600;
 }
 
@@ -280,9 +287,9 @@ caption {
   padding: 8px 11px;
   background: var(--color-ta-btn-bg);
   border: 1px solid var(--color-ta-darkest);
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   color: var(--color-ta-btn);
-  font-size: .85em;
+  font-size: 0.85em;
   font-weight: 600;
 }
 
@@ -296,10 +303,9 @@ caption {
   color: var(--color-ta-btn-disabled);
 }
 
-
 @media (max-width: 992px) {
   .ta thead th.ta-checkbox-column {
-    padding: .47rem;
+    padding: 0.47rem;
   }
 
   .ta-bottom-div {
@@ -319,19 +325,23 @@ caption {
 /* Sort table */
 
 @media (max-width: 992px) {
-  .sortable thead tr {
+  .ta-responsive-full.sortable thead tr {
     display: block;
     margin: 10px 0;
     text-align: center;
   }
 
-  .sortable thead th {
+  .ta-responsive-full.sortable thead th {
     border: 1px solid var(--color-ta-secondary);
-    border-radius: .25rem;
+    border-radius: 0.25rem;
     display: inline-block;
     line-height: 1;
     margin: 3px 0;
-    padding: .6rem 1.5rem .6rem .6rem;
+    padding: 0.6rem 1.5rem 0.6rem 0.6rem;
+  }
+
+  .ta-responsive-full.sortable thead th.ta-checkbox-column {
+    padding: 0.47rem;
   }
 }
 
@@ -346,9 +356,9 @@ caption {
 .ta-search-container input {
   background-color: var(--color-ta-light);
   color: var(--color-ta-darker);
-  padding: .5rem 2.5rem .5rem .5rem;
+  padding: 0.5rem 2.5rem 0.5rem 0.5rem;
   border: 1px solid var(--color-ta-secondary);
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   width: 250px;
 }
 
@@ -394,15 +404,15 @@ caption {
 
 .ta-responsive-force-full thead th {
   border: 1px solid var(--color-ta-secondary);
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   display: inline-block;
   line-height: 1;
   margin: 3px 0;
-  padding: .6rem 1.5rem .6rem .6rem;
+  padding: 0.6rem 1.5rem 0.6rem 0.6rem;
 }
 
 .ta-responsive-force-full thead th.ta-checkbox-column {
-  padding: .47rem;
+  padding: 0.47rem;
 }
 
 .ta-responsive-force-full tbody tr {
@@ -434,7 +444,7 @@ caption {
 }
 
 .ta-responsive-force-full tr {
-  border-radius: .25rem;
+  border-radius: 0.25rem;
 }
 
 .ta-responsive-force-full td {
@@ -455,8 +465,8 @@ caption {
 .ta-responsive-force-full td:first-child {
   background-color: var(--color-ta-dark);
   border: 1px solid var(--color-ta-secondary);
-  border-top-left-radius: .25rem;
-  border-top-right-radius: .25rem;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
   color: var(--color-ta-darker);
   font-weight: bold;
 }
@@ -477,4 +487,3 @@ caption {
   overflow: hidden;
   margin-bottom: -0.3rem;
 }
-

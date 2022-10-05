@@ -43,4 +43,5 @@ yarn lite-server
 ## References
 
 ### Theme and mobile reference
+
 - [Responsive and sortable tables](https://codepen.io/mlegakis/pen/jBYPGr)
