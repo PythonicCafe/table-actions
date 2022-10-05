@@ -1,7 +1,7 @@
 {
   "name": "table-actions",
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "version": "0.0.7",
+  "version": "0.1.8",
   "description": "Simple & customizable table with sort and checkbox functions in vanilla JS",
   "module": "dist/table-actions.min.js",
   "css": "css/table-actions.min.css",
