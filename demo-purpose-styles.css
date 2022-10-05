@@ -46,4 +46,9 @@ h1 {
   opacity: 60%;
 }
 
+@media (min-width: 992px) {
+  .ta-container {
+    margin: 0rem 5rem;
+  }
+}
 /* End Demo purposes table styles */
