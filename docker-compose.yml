@@ -1,0 +1,15 @@
+version: "3"
+services:
+  app:
+    build: .
+    user: '1000:1000'
+    container_name: ta_development
+    command: sh wrapper_script.sh
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - nodemodules:/app/node_modules
+
+volumes:
+  nodemodules: {}
