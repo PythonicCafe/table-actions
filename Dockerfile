@@ -15,5 +15,3 @@ COPY wrapper_script.sh wrapper_script.sh
 RUN chown -R node node_modules/
 
 USER node
-
-CMD sh wrapper_script.sh

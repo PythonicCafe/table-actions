@@ -1,0 +1,61 @@
+.ta-bottom-div {
+  margin: 1rem 0rem;
+  display: flex;
+  justify-content: end;
+  gap: 0.5rem;
+}
+
+.ta-numbered-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ta-paginable-pages {
+  display: flex;
+  align-items: center;
+  background-color: var(--c-ta-dark);
+  color: var(--c-ta-darker);
+  border-radius: var(--r-ta-btn-border);
+  padding: 0rem 1rem;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+.ta-btn {
+  position: relative;
+  padding: 8px 11px;
+  background: var(--c-ta-btn-bg);
+  border: 1px solid var(--c-ta-darkest);
+  border-radius: var(--r-ta-btn-border);
+  color: var(--c-ta-btn);
+  font-size: 0.85em;
+  font-weight: 600;
+  transition: background-color var(--t-ta-time), border var(--t-ta-time);
+}
+
+.ta-btn:hover:not(:disabled) {
+  background-color: var(--c-ta-btn-bg-hover);
+  cursor: pointer;
+}
+
+.ta-btn:disabled {
+  background-color: var(--c-ta-btn-bg-disabled);
+  color: var(--c-ta-btn-disabled);
+}
+
+@media (max-width: 992px) {
+  .ta-bottom-div {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .ta-numbered-buttons {
+    flex-wrap: wrap;
+  }
+
+  .ta-responsive-full {
+    box-shadow: none;
+  }
+}
+

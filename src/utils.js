@@ -47,9 +47,6 @@ export function newElement(
   }
 
   if (options.prependEl) {
-    console.log("nodeToAppend", nodeToAppend);
-    console.log("el", el);
-    console.log("options.prependEl", options.prependEl);
     return nodeToAppend.insertBefore(el, options.prependEl);
   }
 
