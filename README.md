@@ -2,29 +2,21 @@
 
 Simple & customizable table with search, sort, pagination and checkbox functions in vanilla JS
 
-## Generation
-
-- Download `node_modules` dependecies
-
-```bash
-yarn
-```
-
-- Generate the package local
+## Development
+Docker container running lite-server and watching code changes
 
 ```bash
-yarn build
-# or yarn watch if you want to develop with automatic updates
+make watch
 ```
 
-- Run template examples local
+Results can be tested in http://localhost:3000/ and http://localhost:3000/large-data-table.html
+
+## Generate bundle
+Local bundle pack with project name and actual project version in root folder
 
 ```bash
-yarn lite-server
+make bundle
 ```
-
-- Your default browser will automatically open in `localhost:3000`
-- There is another example template in `localhost:3000/large-data-table.html`
 
 ## Features
 
