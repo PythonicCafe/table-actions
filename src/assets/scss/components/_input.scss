@@ -2,22 +2,23 @@
   display: flex;
   justify-content: end;
   position: relative;
+  font-family: var(--font-family);
 
   input {
-    background-color: var(--c-ta-light);
-    color: var(--c-ta-darker);
+    background-color: var(--color-light);
+    color: var(--color-darker);
     padding: 0.5rem 2.5rem 0.5rem 0.5rem;
-    border: 1px solid var(--c-ta-secondary);
-    border-radius: var(--r-ta-border-radius);
+    border: 1px solid var(--color-tertiary);
+    border-radius: var(--border-radius-radius);
     width: 250px;
   }
 
   &::after {
     position: absolute;
     content: " ";
-    -webkit-mask-image: var(--i-ta-search);
-    mask-image: var(--i-ta-search);
-    background-color: var(--c-ta-secondary);
+    -webkit-mask-image: var(--icon-search);
+    mask-image: var(--icon-search);
+    background-color: var(--color-tertiary);
     bottom: 25%;
     right: 1rem;
     height: 1rem;
