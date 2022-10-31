@@ -1,0 +1,10 @@
+services:
+  app:
+    build: ./docker/dev
+    command:
+      - /bin/sh
+      - -c
+      - |
+         yarn run build 2>/dev/null
+         yarn run lite-server &
+         yarn run test

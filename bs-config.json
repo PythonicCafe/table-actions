@@ -1,4 +1,7 @@
 {
+  "notify": false,
+  "ghostMode": false,
+  "logLevel": "silent",
   "injectChanges": false,
   "files": [
     "./src/assets/*.scss",
