@@ -1,15 +1,15 @@
 version: "3"
+
 services:
   app:
-    build: .
+    build:
+      context: ./
+      dockerfile: ./docker/dev/Dockerfile
     user: '1000:1000'
-    container_name: ta_development
+    container_name: ta_dev
     command: sh wrapper_script.sh
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
-      - nodemodules:/app/node_modules
-
-volumes:
-  nodemodules: {}
+      - '.:/app'
+      - '/app/node_modules'
