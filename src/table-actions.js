@@ -158,7 +158,7 @@ export class TableActions {
 
     newElement(
       "button",
-      ["ta-btn", "ta-btn-pag", "back-page"],
+      ["ta-btn", "ta-btn-pag", "backward-page"],
       "&lt;",
       bottomDiv
     ).addEventListener("click", function () {
@@ -571,10 +571,10 @@ export class TableActions {
     }
 
     if (self.currentPage === 1) {
-      self.tableContainer.querySelector(".back-page").disabled = true;
+      self.tableContainer.querySelector(".backward-page").disabled = true;
       self.tableContainer.querySelector(".back-all-pages").disabled = true;
     } else {
-      self.tableContainer.querySelector(".back-page").disabled = false;
+      self.tableContainer.querySelector(".backward-page").disabled = false;
       self.tableContainer.querySelector(".back-all-pages").disabled = false;
     }
   }
