@@ -1,7 +1,7 @@
 import {
   toNormalForm,
+  newElementToNode,
   newElement,
-  createElementWithClassList,
 } from "./utils.js";
 
 export class TableActions {
@@ -17,9 +17,7 @@ export class TableActions {
       ? this.table.parentNode.parentNode
       : this.table.parentNode;
 
-    this.tableRows = [
-      ...this.table.querySelector("tbody").querySelectorAll("tr"),
-    ];
+    this.dataJson = options.data;
 
     this.options = {
       searchable: options.searchable || true,
@@ -38,17 +36,25 @@ export class TableActions {
       checkableButtonLabel: options.checkableButtonLabel || "Interact",
     };
 
-    this.hasPages = this._lastPage() > 1;
-    this.currentPage = 1;
-
     this._init();
   }
 
   _init() {
+    if (this.dataJson) {
+      this._populateTableFromJson(this.dataJson)
+    }
+
+    this.tableRows = [
+      ...this.table.querySelector("tbody").querySelectorAll("tr"),
+    ];
+
+    this.hasPages = this._lastPage() > 1;
+    this.currentPage = 1;
+
     const checkableRows = this.options.checkableRows;
 
     // Set bottom-div to add buttons
-    newElement("div", ["ta-bottom-div"], "", this.tableContainer);
+    newElementToNode("div", { classList: ["ta-bottom-div"], label:"", nodeToAppend: this.tableContainer });
 
     if (checkableRows) this._setTableCheckBoxes();
     if (this.options.sortable) this._setTableSort(checkableRows);
@@ -65,12 +71,65 @@ export class TableActions {
     }
   }
 
+  _populateTableFromJson(data) {
+    const thead = newElement("thead");
+    const tbody = newElement("tbody");
+
+    let tr = newElement("tr");
+
+    this.table.appendChild(thead);
+    this.table.appendChild(tbody);
+
+    // Populating table head
+    for (const head of data.headings) {
+      newElementToNode(
+        "th",
+        {
+          label: head.label,
+          nodeToAppend: tr,
+          datasets:
+          [
+            { name: 'type', value: head.type }
+          ]
+        }
+      );
+    }
+
+    let rowIdField = data.headings.findIndex(obj => obj.name === data.rowIdField);
+    if (this.options.checkableRows && rowIdField > 0) {
+      rowIdField -= 1;
+    } else {
+      rowIdField = 0;
+    }
+
+    thead.appendChild(tr);
+
+    // Populating table rows
+    for (const row of [...data.data]) {
+      tr = newElement("tr");
+      for (const el of row) {
+        newElementToNode("td",
+          {
+            label: el,
+            nodeToAppend: tr,
+          }
+        );
+      }
+      tr.dataset.rowId = row[
+        rowIdField
+      ];
+      tbody.appendChild(tr);
+    }
+  }
+
   // Setters
   _setSearchField() {
     const self = this;
     self.defaultStateTableRows = [...self.tableRows];
 
-    newElement("input", [], "Pesquisa", this.tableContainer, {
+    newElementToNode("input", {
+      label: "Pesquisa",
+      nodeToAppend: this.tableContainer,
       prependEl: this.taResponsiveContainer
         ? this.table.parentNode
         : this.table,
@@ -117,8 +176,8 @@ export class TableActions {
         }
 
         if (!result.length) {
-          const tr = createElementWithClassList("tr");
-          const td = createElementWithClassList("td", ["ta-td-message"]);
+          const tr = newElement("tr");
+          const td = newElement("td", ["ta-td-message"]);
           td.dataset.label = "Message";
           td.colSpan = self.table.querySelectorAll("th").length;
           td.innerHTML = "Nenhum elemento a ser exibido";
@@ -144,11 +203,13 @@ export class TableActions {
 
     const bottomDiv = self.tableContainer.querySelector(".ta-bottom-div");
 
-    newElement(
+    newElementToNode(
       "button",
-      ["ta-btn", "ta-btn-pag-jump", "back-all-pages"],
-      "&lt;&lt;",
-      bottomDiv
+      {
+        classList: ["ta-btn", "ta-btn-pag-jump", "back-all-pages"],
+        label: "&lt;&lt;",
+        nodeToAppend: bottomDiv
+      }
     ).addEventListener("click", function () {
       if (self.currentPage > 1) {
         self.currentPage = 1;
@@ -156,11 +217,13 @@ export class TableActions {
       }
     });
 
-    newElement(
+    newElementToNode(
       "button",
-      ["ta-btn", "ta-btn-pag", "backward-page"],
-      "&lt;",
-      bottomDiv
+      {
+        classList: ["ta-btn", "ta-btn-pag", "backward-page"],
+        label: "&lt;",
+        nodeToAppend: bottomDiv
+      }
     ).addEventListener("click", function () {
       if (self.currentPage > 1) {
         self.currentPage = self.currentPage -= 1;
@@ -169,15 +232,17 @@ export class TableActions {
     });
 
     if (this.options.paginable === "list") {
-      newElement("div", ["ta-numbered-buttons"], "", bottomDiv);
+      newElementToNode("div", { classList: ["ta-numbered-buttons"], nodeToAppend: bottomDiv });
     } else if (this.options.paginable === "buttons") {
-      newElement("div", ["ta-paginable-pages"], "", bottomDiv);
+      newElementToNode("div", { classList: ["ta-paginable-pages"], nodeToAppend: bottomDiv });
     }
-    newElement(
+    newElementToNode(
       "button",
-      ["ta-btn", "ta-btn-pag", "forward-page"],
-      "&gt;",
-      bottomDiv
+      {
+        classList: ["ta-btn", "ta-btn-pag", "forward-page"],
+        label: "&gt;",
+        nodeToAppend: bottomDiv
+      }
     ).addEventListener("click", function () {
       if (self.currentPage < self._lastPage()) {
         self.currentPage = self.currentPage += 1;
@@ -185,11 +250,13 @@ export class TableActions {
       }
     });
 
-    newElement(
+    newElementToNode(
       "button",
-      ["ta-btn", "ta-btn-pag-jump", "forward-all-pages"],
-      "&gt;&gt;",
-      bottomDiv
+      {
+        classList: ["ta-btn", "ta-btn-pag-jump", "forward-all-pages"],
+        label: "&gt;&gt;",
+        nodeToAppend: bottomDiv
+      }
     ).addEventListener("click", function () {
       if (self.currentPage < self._lastPage()) {
         self.currentPage = self._lastPage();
@@ -257,11 +324,13 @@ export class TableActions {
         }
       }
 
-      newElement(
+      newElementToNode(
         "button",
-        ["ta-btn", "ta-btn-pag-numbered", `page-${pageNumber}`],
-        label,
-        self.tableContainer.querySelector(".ta-numbered-buttons")
+        {
+          classList: ["ta-btn", "ta-btn-pag-numbered", `page-${pageNumber}`],
+          label,
+          nodeToAppend: self.tableContainer.querySelector(".ta-numbered-buttons")
+        }
       ).addEventListener("click", function () {
         self.currentPage = pageNumber;
         self._updateTable();
@@ -312,12 +381,14 @@ export class TableActions {
     }
 
     // Set interaction button
-    const button = newElement(
+    const button = newElementToNode(
       "button",
-      ["ta-btn", "interact"],
-      self.options.checkableButtonLabel,
-      self.tableContainer.querySelector(".ta-bottom-div"),
-      { disabled: true }
+      {
+        classList: ["ta-btn", "interact"],
+        label: self.options.checkableButtonLabel,
+        nodeToAppend: self.tableContainer.querySelector(".ta-bottom-div"),
+        disabled: true
+      }
     );
 
     // Click button show all element selected
