@@ -9,13 +9,27 @@ Docker container running lite-server and watching code changes
 make watch
 ```
 
-Results can be tested in http://localhost:3000/ and http://localhost:3000/large-data-table.html
+Results can be tested in http://localhost:3000/ and http://localhost:3000/example-json.html
 
 ## Generate bundle
 Local bundle pack with project name and actual project version in root folder
 
 ```bash
 make bundle
+```
+
+## Run tests
+Execute all tests suites of root `/tests` folder
+
+```bash
+make test
+```
+
+## More
+To see all make commands
+
+```bash
+make help
 ```
 
 ## Features
@@ -27,6 +41,7 @@ make bundle
 - Theme light and dark
 - Mobile theme options full responsive
 - Search field
+- Populate table with json data (see example-json)
 
 ## Roadmap
 
