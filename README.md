@@ -32,6 +32,30 @@ To see all make commands
 make help
 ```
 
+## Installation
+```bash
+yarn add table-actions
+```
+
+Or directly in the HTML file
+```html
+<!-- Add to head HTML tag -->
+<link rel="stylesheet" href="./css/table-actions.min.css" />
+<!-- Add to the bottom of body HTML tag -->
+<script src="./dist/table-actions.js"></script>
+
+<!-- or directly from unpkg -->
+<link rel="stylesheet" href="https://unpkg.com/table-actions@lastest/css/table-actions.min.css" />
+<script src="https://unpkg.com/table-actions@latest/dist/table-actions.min.js"></script>
+```
+
+## Run
+```js
+  // Utils library functions: toNormalForm and newElement can be imported here
+  import { TableActions } from 'table-actions';
+
+  const table = new TableActions("elementOrQuerySelector", {/* options */}); // only this line when included with script HTML tag
+```
 ## Features
 
 - Checkable columns with callback function to interact with selected elements
