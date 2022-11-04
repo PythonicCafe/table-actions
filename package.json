@@ -1,14 +1,19 @@
 {
   "name": "table-actions",
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "version": "0.1.11",
+  "version": "0.1.14",
   "description": "Simple & customizable table with sort and checkbox functions in vanilla JS",
-  "module": "dist/table-actions.min.js",
+  "cdn": "dist/table-actions.min.js",
+  "module": "dist/table-actions.js",
   "scss": "css/table-actions.min.css",
   "targets": {
-    "module": {
-      "source": "src/index.js",
+    "cdn": {
+      "source": "entry.js",
+      "outputFormat": "global",
       "optimize": true
+    },
+    "module": {
+      "source": "src/index.js"
     },
     "scss": {
       "source": "src/assets/scss/main.scss",
@@ -18,7 +23,6 @@
   "scripts": {
     "prettier": "prettier --write .",
     "eslint": "eslint 'src/*.js'",
-    "dev": "parcel src/index.js",
     "build": "parcel build --no-source-maps --no-cache",
     "watch": "parcel watch --no-source-maps --no-cache",
     "lite-server": "lite-server",
@@ -30,6 +34,7 @@
     "url": "git+https://github.com/marcmatias/table-actions.git"
   },
   "files": [
+    "dist/table-actions.js",
     "dist/table-actions.min.js",
     "css/table-actions.min.css",
     "README.md"
