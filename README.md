@@ -81,7 +81,7 @@ const table = new TableActions("elementOrQuerySelector", {
 - Theme light and dark
 - Mobile theme options full responsive
 - Search field
-- Populate table with json data (see example-json)
+- Populate table with json data (example: demo/json-data-table.html)
 
 ## Roadmap
 
