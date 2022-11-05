@@ -1,110 +1,109 @@
 import puppeteer from "puppeteer";
-import { gotoPage }  from "./utils.js";
+import { gotoPage } from "./utils.js";
 
-let app = 'http://localhost:3000/demo/html-data-table.html';
+let app = "http://localhost:3000/demo/html-data-table.html";
 let browser, page;
 
-const args = [
-  '--no-sandbox',
-  '--disable-setuid-sandbox'
-]
+const args = ["--no-sandbox", "--disable-setuid-sandbox"];
 
 describe("Table Actions Suite", () => {
   beforeEach(async () => {
     // Setting browser
-    browser = await puppeteer.launch({args});
+    browser = await puppeteer.launch({ args });
     // New page
     page = await browser.newPage();
     // Going to app url
     await gotoPage(app, page);
-  })
+  });
 
   afterEach(async () => {
     // Close page
     await page.close();
     // Closer browser
     await browser.close();
-  })
+  });
 
-  test('Ordering table click in first th', async () => {
+  test("Ordering table click in first th", async () => {
     // Query button by xpath element and text
     const th = (await page.$x("//th[text()='ID']"))[0];
-    await th.click()
-    await th.click()
+    await th.click();
+    await th.click();
 
     const datasetRowId = await page.evaluate(
       () => document.querySelector("tbody>tr").dataset.rowId
     );
-    expect(datasetRowId).toBe("11")
-  })
+    expect(datasetRowId).toBe("11");
+  });
 
-  test('Checking all rows table and interact', async () => {
+  test("Checking all rows table and interact", async () => {
     // Query button by xpath
     const th = (await page.$x("//th//input"))[0];
-    await th.click()
+    await th.click();
 
-    await page.click('.interact');
+    await page.click(".interact");
 
     const message = await page.evaluate(
       () => document.querySelector("#result>span").innerText
     );
-    expect(message).toBe("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11")
-  })
+    expect(message).toBe("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11");
+  });
 
-  test('Checking first and third rows table and interact', async () => {
+  test("Checking first and third rows table and interact", async () => {
     // Query button by xpath
     let th = (await page.$x("//tr//td//input"))[0];
-    await th.click()
+    await th.click();
     th = (await page.$x("//tr//td//input"))[2];
-    await th.click()
+    await th.click();
 
-    await page.click('.interact');
+    await page.click(".interact");
 
     const message = await page.evaluate(
       () => document.querySelector("#result>span").innerText
     );
-    expect(message).toBe("1, 3")
-  })
+    expect(message).toBe("1, 3");
+  });
 
-  test('Paginate table forward', async () => {
-    await page.click('.forward-page');
-
-    const datasetRowId = await page.evaluate(
-      () => document.querySelector("tbody>tr").dataset.rowId
-    );
-    expect(datasetRowId).toBe("11")
-  })
-
-  test('Paginate table back', async () => {
-    await page.click('.forward-page');
-    await page.click('.backward-page');
+  test("Paginate table forward", async () => {
+    await page.click(".forward-page");
 
     const datasetRowId = await page.evaluate(
       () => document.querySelector("tbody>tr").dataset.rowId
     );
-    expect(datasetRowId).toBe("1")
-  })
+    expect(datasetRowId).toBe("11");
+  });
 
-  test('Search table', async () => {
-    await page.type(".ta-search-container>input", "árlindo", { delay: 300 } );
+  test("Paginate table back", async () => {
+    await page.click(".forward-page");
+    await page.click(".backward-page");
+
+    const datasetRowId = await page.evaluate(
+      () => document.querySelector("tbody>tr").dataset.rowId
+    );
+    expect(datasetRowId).toBe("1");
+  });
+
+  test("Search table", async () => {
+    await page.type(".ta-search-container>input", "árlindo", { delay: 300 });
 
     const rowLength = await page.evaluate(
       () => document.querySelectorAll(".ta tbody tr").length
     );
-    expect(rowLength).toBe(1)
-  })
+    expect(rowLength).toBe(1);
+  });
 
-  test('Search table unexisting row value', async () => {
-    await page.type(".ta-search-container>input", "000xxx", { delay: 300 } );
+  test("Search table unexisting row value", async () => {
+    await page.type(".ta-search-container>input", "000xxx", { delay: 300 });
 
     const rowLength = await page.evaluate(
       () => document.querySelectorAll(".ta tbody tr").length
     );
-    expect(rowLength).toBe(1)
+    expect(rowLength).toBe(1);
 
-    const row = await page.evaluate(
-      () => document.querySelector(".ta tbody tr td").classList.contains("ta-td-message")
+    const row = await page.evaluate(() =>
+      document
+        .querySelector(".ta tbody tr td")
+        .classList.contains("ta-td-message")
     );
-    expect(row).toBe(true)
-  })
-})
+    expect(row).toBe(true);
+  });
+});

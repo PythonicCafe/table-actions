@@ -9,16 +9,14 @@
   --color-dark: #f9f9f9;
   --color-btn: #fff;
 
-
   /* Icons */
   --icon-chevron-up: url("data:image/svg+xml,<svg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z'/></svg>");
   --icon-chevron-down: url("data:image/svg+xml,<svg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>");
   --icon-search: url("data:image/svg+xml,<svg viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/></svg>");
 
-
   /* Border radius */
-  --border-radius: .25rem;
-  --border-radius-btn: .25rem;
+  --border-radius: 0.25rem;
+  --border-radius-btn: 0.25rem;
 
   /* Font */
   --font-family: system-ui, -apple-system, sans-serif;
@@ -38,4 +36,3 @@
   --color-dark: #505050;
   --color-on-primary: #fff;
 }
-

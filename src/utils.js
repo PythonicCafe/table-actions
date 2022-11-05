@@ -17,10 +17,7 @@ export function newElement(element, classList = []) {
 }
 
 // Create new document elements with node to append
-export function newElementToNode(
-  element,
-  options = {} 
-) {
+export function newElementToNode(element, options = {}) {
   options = mergeObjects(
     {
       classList: {},
@@ -30,8 +27,9 @@ export function newElementToNode(
       prependEl: undefined,
       outsideElement: { element: undefined, classList: {} },
       datasets: {},
-    }, options
-  )
+    },
+    options
+  );
 
   let el = newElement(element, Object.values(options.classList));
 
@@ -52,7 +50,7 @@ export function newElementToNode(
 
   if (options.outsideElement && options.outsideElement.element) {
     const outsideEl = newElement(
-      options.outsideElement.element, 
+      options.outsideElement.element,
       Object.values(options.outsideElement.classList)
     );
     outsideEl.appendChild(el);
@@ -65,7 +63,6 @@ export function newElementToNode(
 
   return options.nodeToAppend.appendChild(el);
 }
-
 
 export function deepCopy(obj) {
   let newObj = {};

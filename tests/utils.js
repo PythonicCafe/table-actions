@@ -1,5 +1,5 @@
 export function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function gotoPage(app, page) {
@@ -7,7 +7,7 @@ export async function gotoPage(app, page) {
 
   while (count < 3) {
     try {
-      await page.goto(app, {waitUntil: 'load'});
+      await page.goto(app, { waitUntil: "load" });
       break;
     } catch (e) {
       await sleep(500);
@@ -19,6 +19,4 @@ export async function gotoPage(app, page) {
       }
     }
   }
-
 }
-

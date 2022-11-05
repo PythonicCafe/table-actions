@@ -62,13 +62,13 @@
         padding: 0.47rem;
       }
     }
-
   }
 
   tbody {
     tr {
       background-color: var(--color-light);
-      transition: background-color var(--transition-time), border var(--transition-time);
+      transition: background-color var(--transition-time),
+        border var(--transition-time);
 
       &:hover {
         background-color: var(--color-dark);
@@ -77,9 +77,7 @@
       &.checked {
         background-color: var(--color-dark);
       }
-
     }
-
   }
 
   th,
@@ -243,7 +241,6 @@
         }
       }
     }
-
   }
 
   /* Sort table */
@@ -341,9 +338,7 @@
         &.ta-checkbox-row {
           min-height: 1rem;
         }
-
       }
-
     }
 
     thead {

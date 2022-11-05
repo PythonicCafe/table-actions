@@ -32,7 +32,8 @@
   color: var(--color-on-primary);
   font-size: 0.85em;
   font-weight: 600;
-  transition: background-color var(--transition-time), border var(--transition-time);
+  transition: background-color var(--transition-time),
+    border var(--transition-time);
 }
 
 .ta-btn:hover:not(:disabled) {
@@ -60,4 +61,3 @@
     box-shadow: none;
   }
 }
-
