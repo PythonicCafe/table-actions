@@ -1,0 +1,12 @@
+services:
+  app:
+    command:
+      - /bin/sh
+      - -c
+      - |
+        yarn run watch &
+        yarn run lite-server &
+        wait -n # Wait for any process to exit
+        exit $? # Exit with status of process that exited first
+    volumes:
+      - ".:/app"

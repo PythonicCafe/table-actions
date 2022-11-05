@@ -1,5 +1,5 @@
 services:
   app:
-    command: yarn run build
+    stdin_open: true 
     volumes:
       - ".:/app"
