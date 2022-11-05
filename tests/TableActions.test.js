@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
 import { gotoPage }  from "./utils.js";
 
-let app = 'http://localhost:3000';
+let app = 'http://localhost:3000/demo/html-data-table.html';
 let browser, page;
 
 const args = [
