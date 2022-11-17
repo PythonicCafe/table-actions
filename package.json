@@ -32,6 +32,11 @@
     "url": "https://github.com/marcmatias/table-actions/issues"
   },
   "homepage": "https://github.com/marcmatias/table-actions#readme",
+  "jest": {
+    "setupFilesAfterEnv": [
+      "./jestGlobalSetup.js"
+    ]
+  },
   "devDependencies": {
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",

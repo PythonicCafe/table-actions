@@ -1,28 +1,4 @@
-import puppeteer from "puppeteer";
-import { gotoPage } from "./utils.js";
-
-let app = "http://localhost:3000/demo/html-data-table.html";
-let browser, page;
-
-const args = ["--no-sandbox", "--disable-setuid-sandbox"];
-
 describe("Table Actions Suite", () => {
-  beforeEach(async () => {
-    // Setting browser
-    browser = await puppeteer.launch({ args });
-    // New page
-    page = await browser.newPage();
-    // Going to app url
-    await gotoPage(app, page);
-  });
-
-  afterEach(async () => {
-    // Close page
-    await page.close();
-    // Closer browser
-    await browser.close();
-  });
-
   test("Ordering table click in first th", async () => {
     // Query button by xpath element and text
     const th = (await page.$x("//th[text()='ID']"))[0];
