@@ -3,40 +3,22 @@
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "version": "0.1.14",
   "description": "Simple & customizable table with sort and checkbox functions in vanilla JS",
-  "cdn": "dist/table-actions.min.js",
-  "module": "dist/table-actions.js",
-  "scss": "css/table-actions.min.css",
-  "targets": {
-    "cdn": {
-      "source": "entry.js",
-      "outputFormat": "global",
-      "optimize": true
-    },
-    "module": {
-      "source": "src/index.js"
-    },
-    "scss": {
-      "source": "src/assets/scss/main.scss",
-      "optimize": true
-    }
-  },
+  "amdName": "TableActions",
   "scripts": {
-    "prettier": "prettier --write .",
+    "build": "microbundle -o dist/table-actions.min.js -f umd --sourcemap false --no-pkg-main",
     "eslint": "eslint 'src/*.js'",
-    "build": "parcel build --no-source-maps --no-cache",
-    "watch": "parcel watch --no-source-maps --no-cache",
-    "lite-server": "lite-server",
+    "prettier": "prettier --write .",
     "test": "jest --detectOpenHandles --forceExit",
-    "test-watch": "jest --detectOpenHandles --watchAll"
+    "test-watch": "jest --detectOpenHandles --watchAll",
+    "watch": "yarn run build watch"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/marcmatias/table-actions.git"
   },
   "files": [
-    "dist/table-actions.js",
     "dist/table-actions.min.js",
-    "css/table-actions.min.css",
+    "dist/table-actions.min.css",
     "README.md"
   ],
   "keywords": [
@@ -51,14 +33,14 @@
   },
   "homepage": "https://github.com/marcmatias/table-actions#readme",
   "devDependencies": {
-    "@parcel/babel-preset-env": "^2.7.0",
-    "@parcel/transformer-sass": "2.7.0",
     "eslint": "^8.23.0",
     "eslint-config-prettier": "^8.5.0",
     "jest": "^29.2.2",
     "lite-server": "^2.6.1",
-    "parcel": "^2.7.0",
+    "microbundle": "^0.15.1",
     "prettier": "^2.7.1",
-    "puppeteer": "^19.2.0"
-  }
+    "puppeteer": "^19.2.0",
+    "sass": "^1.56.1"
+  },
+  "dependencies": {}
 }

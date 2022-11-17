@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Simple Table Demo</title>
-    <link rel="stylesheet" href="../css/table-actions.min.css" />
+    <link rel="stylesheet" href="../dist/table-actions.min.css" />
     <link rel="stylesheet" href="demo-purpose.css" />
   </head>
   <body>
@@ -30,8 +30,8 @@
       <table class="ta ta-responsive-full"></table>
       <article id="result">Selected: <span>---</span></article>
     </section>
-    <script type="module">
-      import { TableActions } from "../dist/table-actions.js";
+    <script src="../dist/table-actions.min.js"></script>
+    <script>
 
       fetch("demo.json")
         .then((response) => response.json())
