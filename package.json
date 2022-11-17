@@ -1,9 +1,11 @@
 {
   "name": "table-actions",
-  "browserslist": "> 0.5%, last 2 versions, not dead",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Simple & customizable table with sort and checkbox functions in vanilla JS",
   "amdName": "TableActions",
+  "exports": {
+    "default": "./dist/table-actions.min.js"
+  },
   "scripts": {
     "build": "microbundle -o dist/table-actions.min.js -f umd --sourcemap false --no-pkg-main",
     "eslint": "eslint 'src/*.js'",
@@ -26,6 +28,7 @@
     "pagination",
     "sortable"
   ],
+  "browserslist": "> 0.5%, last 2 versions, not dead",
   "author": "Pythonic Café",
   "license": "(LGPL-3.0)",
   "bugs": {
