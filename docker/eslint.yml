@@ -1,5 +1,5 @@
 services:
   app:
-    command: yarn run prettier
+    command: yarn run eslint
     volumes:
       - ".:/app"

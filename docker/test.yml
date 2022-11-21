@@ -4,7 +4,7 @@ services:
       - /bin/sh
       - -c
       - |
-        yarn run build 2>/dev/null
+        yarn run build 2>/dev/null;
         yarn run lite-server &
         yarn run test
     volumes:
