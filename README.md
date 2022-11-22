@@ -1,6 +1,7 @@
 # Table actions
 
-Simple & customizable table with search, sort, pagination and checkbox functions in vanilla JS
+Simple & customizable table with search, sort, pagination and checkbox functions
+in vanilla JS
 
 ## Development
 
@@ -12,8 +13,8 @@ make watch
 
 Results can be tested in demos:
 
-- http://localhost:3000/demo/html-data-table.html
-- http://localhost:3000/demo/json-data-table.html
+- [http://localhost:3000/demo/html-data-table.html](http://localhost:3000/demo/html-data-table.html)
+- [http://localhost:3000/demo/json-data-table.html](http://localhost:3000/demo/json-data-table.html)
 
 ## Generate bundle
 
@@ -56,7 +57,7 @@ Or directly in the HTML file
 <!-- or directly from unpkg -->
 <link
   rel="stylesheet"
-  href="https://unpkg.com/table-actions@lastest/css/table-actions.min.css"
+  href="https://unpkg.com/table-actions@latest/css/table-actions.min.css"
 />
 <script src="https://unpkg.com/table-actions@latest/dist/table-actions.min.js"></script>
 ```
