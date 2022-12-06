@@ -56,18 +56,18 @@ export class TableActions {
       nodeToAppend: this.tableContainer,
     });
 
-    if (checkableRows) this._setTableCheckBoxes();
-    if (this.options.sortable) this._setTableSort(checkableRows);
+    if (checkableRows) this._tableCheckBoxes();
+    if (this.options.sortable) this._tableSort(checkableRows);
 
     if (this.options.paginable && this.hasPages) {
-      this._setPaginationButtons();
+      this._paginationButtons();
       this._updateTable();
     }
 
-    this._setMobileTableLabels();
+    this._mobileTableLabels();
 
     if (this.options.searchable) {
-      this._setSearchField();
+      this._searchField();
     }
   }
 
@@ -114,8 +114,8 @@ export class TableActions {
     }
   }
 
-  // Setters
-  _setSearchField() {
+  // Generating elements functions
+  _searchField() {
     const self = this;
     self.defaultStateTableRows = [...self.tableRows];
 
@@ -190,7 +190,7 @@ export class TableActions {
     });
   }
 
-  _setPaginationButtons() {
+  _paginationButtons() {
     const self = this;
 
     const bottomDiv = self.tableContainer.querySelector(".ta-bottom-div");
@@ -251,7 +251,7 @@ export class TableActions {
     });
   }
 
-  _setMobileTableLabels() {
+  _mobileTableLabels() {
     const self = this;
     const tableHeads = this.table.querySelectorAll("th");
 
@@ -267,13 +267,13 @@ export class TableActions {
     }
   }
 
-  _setButtonsOnlyPagination() {
+  _buttonsOnlyPagination() {
     const self = this;
     const div = self.tableContainer.querySelector(".ta-paginable-pages");
     div.innerHTML = `${this.currentPage} - ${this._lastPage()}`;
   }
 
-  _setNumberedListPagination() {
+  _numberedListPagination() {
     const self = this;
     const lastPage = this._lastPage();
     const currentPage = this.currentPage;
@@ -341,7 +341,7 @@ export class TableActions {
     return element;
   }
 
-  _setTableCheckBoxes() {
+  _tableCheckBoxes() {
     // Get class reference to actual table
     const self = this;
     const alreadyAdded = this.options.alreadyAddedElements;
@@ -444,7 +444,7 @@ export class TableActions {
       );
   }
 
-  _setTableSort(checkableRows) {
+  _tableSort(checkableRows) {
     const self = this;
 
     // Setting class to activate table arrows styles
@@ -598,10 +598,10 @@ export class TableActions {
 
       // Update buttons state
       if (this.options.paginable === "list" && this.hasPages) {
-        self._setNumberedListPagination();
+        self._numberedListPagination();
         self._updateButtonsNumbered();
       } else if (this.options.paginable === "buttons" && this.hasPages) {
-        self._setButtonsOnlyPagination();
+        self._buttonsOnlyPagination();
         self._forwardBackwardbuttons();
       }
     } else {
