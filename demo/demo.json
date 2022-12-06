@@ -10,7 +10,7 @@
       "type": "string"
     },
     {
-      "label": "Caffeinated",
+      "label": "Caffeine in composition",
       "type": "bool"
     },
     {
