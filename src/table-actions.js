@@ -321,43 +321,43 @@ export class TableActions {
     }
   }
 
+  _tableCheckboxInsert(elementType, classes = [], disabled = false) {
+    const element = document.createElement(elementType);
+    const input = document.createElement("input");
+
+    if (classes.length) {
+      element.classList.add(...classes);
+    }
+
+    if (disabled) {
+      input.checked = true;
+      input.disabled = disabled;
+      input.title = "Objeto já está adicionado";
+    }
+
+    input.type = "checkbox";
+    element.appendChild(input);
+
+    return element;
+  }
+
   _setTableCheckBoxes() {
     // Get class reference to actual table
     const self = this;
     const alreadyAdded = this.options.alreadyAddedElements;
 
-    function tableCheckboxInsert(elementType, classes = [], disabled = false) {
-      const element = document.createElement(elementType);
-      const input = document.createElement("input");
-
-      if (classes.length) {
-        element.classList.add(...classes);
-      }
-
-      if (disabled) {
-        input.checked = true;
-        input.disabled = disabled;
-        input.title = "Objeto já está adicionado";
-      }
-
-      input.type = "checkbox";
-      element.appendChild(input);
-
-      return element;
-    }
-
     const tableTrs = self.table.querySelectorAll("tbody>tr");
     // Add table header checkbox
     const tr = self.table.querySelector("thead>tr");
-    tr.prepend(tableCheckboxInsert("th", ["ta-checkbox-column"]));
+    tr.prepend(this._tableCheckboxInsert("th", ["ta-checkbox-column"]));
 
     // Add table rows checkbox
     for (const tr of tableTrs) {
       let newTdCheckbox;
       if (alreadyAdded && alreadyAdded.includes(tr.dataset.rowId)) {
-        newTdCheckbox = tableCheckboxInsert("td", ["ta-checkbox-row"], true);
+        newTdCheckbox = self._tableCheckboxInsert("td", ["ta-checkbox-row"], true);
       } else {
-        newTdCheckbox = tableCheckboxInsert("td", ["ta-checkbox-row"]);
+        newTdCheckbox = self._tableCheckboxInsert("td", ["ta-checkbox-row"]);
       }
 
       tr.prepend(newTdCheckbox);
