@@ -10,7 +10,8 @@
     -ms-overflow-style: -ms-autohiding-scrollbar;
   }
 
-  .ta thead {
+  .td,
+  .ta {
     white-space: nowrap;
   }
 
@@ -258,7 +259,7 @@
         border-radius: var(--border-radius);
         display: inline-block;
         line-height: 1;
-        margin: 3px 0;
+        margin: 4px;
         padding: 0.6rem 1.5rem 0.6rem 0.6rem;
       }
 
@@ -344,7 +345,7 @@
     thead {
       tr {
         display: block;
-        margin: 10px 0;
+        margin: 10px 0px;
         text-align: center;
         border-radius: var(--border-radius);
       }
@@ -354,7 +355,7 @@
         border-radius: var(--border-radius);
         display: inline-block;
         line-height: 1;
-        margin: 3px 0;
+        margin: 4px;
         padding: 0.6rem 1.5rem 0.6rem 0.6rem;
 
         &.ta-checkbox-column {
