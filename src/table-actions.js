@@ -6,7 +6,7 @@ export class TableActions {
       typeof element === "string" ? document.querySelector(element) : element;
 
     this.taResponsiveContainer = [...this.table.parentNode.classList].includes(
-      "ta-responsive"
+      "ta-responsive-full-width"
     );
 
     this.tableContainer = this.taResponsiveContainer
