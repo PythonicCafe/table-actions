@@ -1,5 +1,0 @@
-services:
-  app:
-    command: yarn run prettier
-    volumes:
-      - ".:/app"
