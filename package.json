@@ -12,7 +12,7 @@
     "prettier": "prettier --write .",
     "test": "jest --detectOpenHandles --forceExit",
     "test-watch": "jest --detectOpenHandles --watchAll",
-    "watch": "yarn run build watch"
+    "watch": "microbundle -o dist/table-actions.min.js -f umd --sourcemap true --no-pkg-main watch"
   },
   "repository": {
     "type": "git",
