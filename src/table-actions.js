@@ -321,6 +321,16 @@ export class TableActions {
     }
   }
 
+
+  /**
+   * Creates a checkbox input and a parent element of the specified type.
+   *
+   * @param {String} elementType The type of the parent element to be created.
+   * @param {Array} [classes] An array of classes to be added to the parent element.
+   * @param {Boolean} [disabled=false] A boolean indicating whether the checkbox should be disabled.
+   *
+   * @return {Object} The parent element containing the checkbox input.
+   */
   _tableCheckboxInsert(elementType, classes = [], disabled = false) {
     const element = document.createElement(elementType);
     const input = document.createElement("input");
@@ -444,6 +454,11 @@ export class TableActions {
       );
   }
 
+  /**
+   * Adds sorting functionality to a table.
+   *
+   * @param {Boolean} checkableRows Indicates whether the first column of the table is checkable.
+   */
   _tableSort(checkableRows) {
     const self = this;
 
@@ -520,6 +535,12 @@ export class TableActions {
     return result;
   }
 
+  /**
+   * Formats data for sorting purposes.
+   *
+   * @param {String} value The value to be formatted.
+   * @return {String|Number} The formatted value.
+   */
   _genericSortDataFormat(value) {
     const regex = /[\.\,\;\s\n]/g;
     let val = value.replace(regex, "").toLowerCase();
