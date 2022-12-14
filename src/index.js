@@ -1,4 +1,4 @@
-import  "./assets/scss/main.scss";
+import  "./assets/css/main.css";
 import { TableActions } from "./table-actions";
 
 export default TableActions;

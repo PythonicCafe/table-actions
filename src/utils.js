@@ -148,7 +148,7 @@ export function mergeObjects(opts1, opts2) {
 
     // If the property is an array, concatenate the arrays
     if (Array.isArray(newValue) && Array.isArray(oldValue)) {
-      merged[key] = newValue.concat( ...oldValue);
+      merged[key] = newValue.concat(...oldValue);
     }
     // If the property is an object, merge the objects
     else if (

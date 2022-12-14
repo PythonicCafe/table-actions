@@ -9,27 +9,28 @@
     <link rel="stylesheet" href="demo-purpose.css" />
   </head>
   <body>
+
     <section class="ta-container">
-      <div class="theme-toggle">
-        <span onclick="toggleTheme()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-circle-half"
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"
-            />
-          </svg>
-        </span>
-      </div>
       <h1>Table Actions Demo Json Data</h1>
-      <table class="ta ta-responsive-full"></table>
-      <article id="result">Selected: <span>---</span></article>
+      <section class="ta-table-header">
+        <h1 class="ta-table-header__title">HTML table</h1>
+        <p class="ta-table-header__description">HTML table</p>
+      </section>
+      <section>
+        <div class="ta-toolbar">
+          <div class="ta-toolbar__search">
+            <div class="ta-toolbar__search-icon">
+              <i class="bi-search"></i>
+            </div>
+            <input class="ta-toolbar__search-input" type="text" id="name" name="name" placeholder="Enter your name">
+          </div>
+          <button class="ta-toolbar__btn-secondary"><i class="bi-gear"></i></button>
+          <button class="ta-toolbar__btn-primary">Interact</button>
+        </div>
+      </section>
+      <table class="ta"></table>
     </section>
+
     <script src="../dist/table-actions.min.js"></script>
     <script>
       fetch("demo.json")
@@ -56,6 +57,5 @@
           });
         });
     </script>
-    <script src="./demo-purpose.js"></script>
   </body>
 </html>

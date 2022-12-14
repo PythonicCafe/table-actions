@@ -83,6 +83,7 @@ export class TableActions {
     // Populating table head
     for (const head of data.headings) {
       newElementToNode("th", {
+        classList: ["ta__th"],
         label: head.label,
         nodeToAppend: tr,
         datasets: [{ name: "type", value: head.type }],
@@ -102,9 +103,10 @@ export class TableActions {
 
     // Populating table rows
     for (const row of [...data.data]) {
-      tr = newElement("tr");
+      tr = newElement("tr", ["ta__tr"]);
       for (const el of row) {
         newElementToNode("td", {
+          classList: ["ta__td"],
           label: el,
           nodeToAppend: tr,
         });
@@ -359,15 +361,15 @@ export class TableActions {
     const tableTrs = self.table.querySelectorAll("tbody>tr");
     // Add table header checkbox
     const tr = self.table.querySelector("thead>tr");
-    tr.prepend(this._tableCheckboxInsert("th", ["ta-checkbox-column"]));
+    tr.prepend(this._tableCheckboxInsert("th", ["ta-checkbox-column", "ta__th"]));
 
     // Add table rows checkbox
     for (const tr of tableTrs) {
       let newTdCheckbox;
       if (alreadyAdded && alreadyAdded.includes(tr.dataset.rowId)) {
-        newTdCheckbox = self._tableCheckboxInsert("td", ["ta-checkbox-row"], true);
+        newTdCheckbox = self._tableCheckboxInsert("td", ["ta-checkbox-row", "ta__td"], true);
       } else {
-        newTdCheckbox = self._tableCheckboxInsert("td", ["ta-checkbox-row"]);
+        newTdCheckbox = self._tableCheckboxInsert("td", ["ta-checkbox-row", "ta__td"]);
       }
 
       tr.prepend(newTdCheckbox);

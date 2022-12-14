@@ -6,6 +6,7 @@
   "files": [
     "./src/assets/*.scss",
     "./src/assets/**/*.scss",
+    "./src/assets/**/*.css",
     "./src/*.{js}",
     "./*.{html,css,js,scss}",
     "./demo/*.{html,css,js}",
