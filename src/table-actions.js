@@ -36,10 +36,14 @@ export class TableActions {
   }
 
   _init() {
+    // If JSON data draw and populate table
     if (this.dataJson) {
       this._populateTableFromJson(this.dataJson);
     }
+    this._searchColumnsFields();
+    this._addTableClasses();
 
+    // Query inicial state table rows
     this.tableRows = [
       ...this.table.querySelector("tbody").querySelectorAll("tr"),
     ];
@@ -64,14 +68,18 @@ export class TableActions {
       this._updateTable();
     }
 
+    // Add dataset values to generate mobile table headers
     this._mobileTableLabels();
 
+    // Add search field if searchable setted true
     if (this.options.searchable) {
       this._searchField();
     }
   }
 
   _populateTableFromJson(data) {
+    this.JsonData = data;
+
     const thead = newElement("thead");
     const tbody = newElement("tbody");
 
@@ -114,12 +122,76 @@ export class TableActions {
     }
   }
 
+  // Generating search fields in columns
+  _searchColumnsFields() {
+    let data = {};
+
+    if(this.JsonData) {
+      data = this.JsonData;
+    } else {
+      const tableRowHeads = this.table.querySelector("tr");
+      const tableHeads = tableRowHeads.querySelectorAll("th");
+      data.headings = [];
+      for (
+        let thIndex = this.checkableRows ? 1 : 0; // if checkable column jump first
+        thIndex < tableHeads.length;
+        thIndex++
+      ) {
+        const th = tableHeads[thIndex];
+        data.headings.push({
+          label: th.innerText,
+          type: th.dataset.type,
+          format: th.dataset.format,
+          title: th.title
+        })
+      }
+    }
+
+    // Criar uma linha a mais na table header para podermos ter campos de pesquisa para cada coluna
+    let trInteract = newElement("tr");
+
+    // If chechable row create an empty cell to format table
+    if (true) {
+      newElementToNode("th", {
+        classList: ["ta-checkbox-column"],
+        nodeToAppend: trInteract,
+      });
+    }
+
+    for (const head of data.headings) {
+      let th = newElementToNode("th", {
+        nodeToAppend: trInteract,
+      });
+
+      let div = newElement("div");
+      div.classList = ["ta-search"];
+      let input = newElement("input");
+      div.appendChild(input)
+
+      input.classList = ["ta-search__input ta-search__input--column"];
+      input.placeholder = "Search for " + head.label;
+      th.appendChild(div);
+    }
+
+    this.table.querySelector("thead").appendChild(trInteract);
+  }
+
+  _addTableClasses() {
+    const trs = this.table.querySelectorAll("thead>tr");
+    trs[0].classList = ["ta__tr-main"];
+    // If column search fields
+    if (trs[1]) {
+      trs[1].classList = ["ta__tr-interact"];
+    }
+  }
+
   // Generating elements functions
   _searchField() {
     const self = this;
     self.defaultStateTableRows = [...self.tableRows];
 
     newElementToNode("input", {
+      classList: ["ta-search__input"],
       label: "Pesquisa",
       nodeToAppend: this.tableContainer,
       prependEl: this.taResponsiveContainer
@@ -127,7 +199,7 @@ export class TableActions {
         : this.table,
       outsideElement: {
         element: "div",
-        classList: ["ta-search-container"],
+        classList: ["ta-search"],
       },
     }).addEventListener("keyup", function () {
       const search = this.querySelector("input").value;
@@ -253,7 +325,8 @@ export class TableActions {
 
   _mobileTableLabels() {
     const self = this;
-    const tableHeads = this.table.querySelectorAll("th");
+    const tableHeadRow = this.table.querySelector("tr");
+    const tableHeads = tableHeadRow.querySelectorAll("th");
 
     for (const tr of self.tableRows) {
       for (const [key, th] of tableHeads.entries()) {
@@ -463,9 +536,10 @@ export class TableActions {
     const self = this;
 
     // Setting class to activate table arrows styles
-    this.table.classList.add("sortable");
+    this.table.classList.add("ta-sortable");
 
-    const tableHeads = this.table.querySelectorAll("th");
+    const tableRowHeads = this.table.querySelector("tr");
+    const tableHeads = tableRowHeads.querySelectorAll("th");
     for (
       let thIndex = checkableRows ? 1 : 0; // if checkable column jump first
       thIndex < tableHeads.length;
