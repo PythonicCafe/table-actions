@@ -16,12 +16,14 @@ export class TableActions {
     this.dataJson = options.data;
 
     this.options = {
-      searchable: options.searchable || true,
-      sortable: options.sortable || true,
+      searchable: options.searchable !== undefined ? options.searchable : true,
+      sortable: options.sortable !== undefined ? options.sortable : true,
+      // TODO: make paginable set table as null showing all elements whithout pagination.
+      // Now this is working by setting rowsPerPage total number of rows
       // paginable: list or buttons
       paginable: options.paginable || "buttons",
       rowsPerPage: options.rowsPerPage || 10,
-      checkableRows: options.checkableRows || false,
+      checkableRows: options.checkableRows !== undefined ? options.checkableRows : false,
       checkableRowTrReference: options.checkableRowTrReference || "data-row-id",
       alreadyAddedElements: options.alreadyAddedElements,
       checkedElementsCallback:
@@ -36,12 +38,16 @@ export class TableActions {
   }
 
   _init() {
-    // If JSON data draw and populate table
+    // JSON data setted, TA will draw and populate HTML table
     if (this.dataJson) {
       this._populateTableFromJson(this.dataJson);
     }
-    this._searchColumnsFields();
     this._addTableClasses();
+
+    // At least one column with search true will set search column header
+    if (this.table.querySelector(`th[data-search='true']`)) {
+      this._searchColumnsFields();
+    }
 
     // Query inicial state table rows
     this.tableRows = [
@@ -75,6 +81,8 @@ export class TableActions {
     if (this.options.searchable) {
       this._searchField();
     }
+
+    this.defaultStateTableRows = [...this.tableRows];
   }
 
   _populateTableFromJson(data) {
@@ -93,7 +101,10 @@ export class TableActions {
       newElementToNode("th", {
         label: head.label,
         nodeToAppend: tr,
-        datasets: [{ name: "type", value: head.type }],
+        datasets: [
+          { name: "type", value: head.type },
+          { name: "search", value: head.search ? head.search : false }
+        ],
       });
     }
 
@@ -124,6 +135,7 @@ export class TableActions {
 
   // Generating search fields in columns
   _searchColumnsFields() {
+    const self = this;
     let data = {};
 
     if(this.JsonData) {
@@ -139,19 +151,20 @@ export class TableActions {
       ) {
         const th = tableHeads[thIndex];
         data.headings.push({
-          label: th.innerText,
-          type: th.dataset.type,
           format: th.dataset.format,
-          title: th.title
+          label: th.innerText,
+          search: th.dataset.search,
+          title: th.title,
+          type: th.dataset.type,
         })
       }
     }
 
-    // Criar uma linha a mais na table header para podermos ter campos de pesquisa para cada coluna
-    let trInteract = newElement("tr");
+    // Create one more header row in the table
+    let trInteract = newElement("tr", ["ta__tr-interact"]);
 
     // If chechable row create an empty cell to format table
-    if (true) {
+    if (this.options.checkableRows) {
       newElementToNode("th", {
         classList: ["ta-checkbox-column"],
         nodeToAppend: trInteract,
@@ -163,14 +176,23 @@ export class TableActions {
         nodeToAppend: trInteract,
       });
 
-      let div = newElement("div");
-      div.classList = ["ta-search"];
-      let input = newElement("input");
-      div.appendChild(input)
+      if (head.search) {
+        let div = newElement("div");
+        div.classList = ["ta-search"];
+        div.dataset.label = head.label;
 
-      input.classList = ["ta-search__input ta-search__input--column"];
-      input.placeholder = "Search for " + head.label;
-      th.appendChild(div);
+        const input = newElement("input");
+        input.classList = ["ta-search__input ta-search__input--column"];
+        input.placeholder = "Pesquisa em " + head.label;
+
+        const searchInput = head.searchInput ? head.searchInput : undefined;
+        div.appendChild(input)
+        // Activate search field by column
+        input.addEventListener("keyup", function (e) {
+          self.tableSearch(this.value.length === 0, ["Backspace", "Delete"].includes(e.key));
+        });
+        th.appendChild(div);
+      }
     }
 
     this.table.querySelector("thead").appendChild(trInteract);
@@ -179,16 +201,11 @@ export class TableActions {
   _addTableClasses() {
     const trs = this.table.querySelectorAll("thead>tr");
     trs[0].classList = ["ta__tr-main"];
-    // If column search fields
-    if (trs[1]) {
-      trs[1].classList = ["ta__tr-interact"];
-    }
   }
 
   // Generating elements functions
   _searchField() {
     const self = this;
-    self.defaultStateTableRows = [...self.tableRows];
 
     newElementToNode("input", {
       classList: ["ta-search__input"],
@@ -201,65 +218,103 @@ export class TableActions {
         element: "div",
         classList: ["ta-search"],
       },
-    }).addEventListener("keyup", function () {
-      const search = this.querySelector("input").value;
-      const result = [];
-      let thCheckbox = self.table.querySelector("th>[type='checkbox']");
+    }).addEventListener("keyup", function (e) {
+      self.tableSearch(this.querySelector("input").value.length === 0, ["Backspace", "Delete"].includes(e.key));
+    });
+  }
 
-      if (thCheckbox) {
-        thCheckbox.disabled = false;
-      }
+  tableSearch(currentFieldEmpty, erasing) {
+    const self = this;
+    const allSearchFieldEmpty = ![...self.tableContainer.querySelectorAll("input.ta-search__input")]
+      .find(x => x.value.length > 0);
+    let thCheckbox = self.table.querySelector("th>[type='checkbox']");
 
+    if (thCheckbox) {
+      thCheckbox.disabled = false;
+    }
+
+    // This will set default state to table, else set last state
+    if (allSearchFieldEmpty || currentFieldEmpty || erasing) {
       self.tableRows = self.defaultStateTableRows;
+    }
 
-      if (search.length > 2) {
+    const filters = [];
+    let result = [];
+    for (const searchField of self.tableContainer.querySelectorAll("input.ta-search__input")) {
+      const search = searchField.value;
+      const column = searchField.parentNode.dataset.label;
+
+      if (search.length) {
         if (self.options.paginable) {
+          // Return to page 1
           self.currentPage = 1;
         }
-        for (const row of self.tableRows) {
-          const tds = row.querySelectorAll("td");
+        filters.push({ search: searchField.value, column });
+      }
+    }
 
-          for (const td of tds) {
-            let text = td.innerHTML;
+    for (const row of self.tableRows) {
+      const tds = row.querySelectorAll("td");
+      const tdValues = [];
+      let filtered = true;
 
-            const anchor = td.querySelector("a");
-            if (anchor) {
-              text = anchor.innerHTML;
-            }
+      // Extract td innerText and columns
+      for (const td of tds) {
+        let value = td.innerHTML;
 
-            if (
-              text
-                .trim()
-                .toLowerCase()
-                .startsWith(this.querySelector("input").value.toLowerCase())
-            ) {
-              result.push(row);
-              break;
-            }
-          }
+        // If innerHTML is an Anchor HTML query inside text
+        const anchor = td.querySelector("a");
+        if (anchor) {
+          value = anchor.innerHTML;
         }
 
-        if (!result.length) {
-          const tr = newElement("tr");
-          const td = newElement("td", ["ta-td-message"]);
-          td.dataset.label = "Message";
-          td.colSpan = self.table.querySelectorAll("th").length;
-          td.innerHTML = "Nenhum elemento a ser exibido";
-          tr.appendChild(td);
-          result.push(tr);
-
-          if (thCheckbox) {
-            thCheckbox.disabled = true;
-          }
-        }
-
-        self.tableRows = result;
+        tdValues.push({ value, column: td.dataset.label });
       }
 
-      self._updateTable();
+      // Check if all filters found result
+      filtered = filters.every(
+        // True if all filters found at least one result in tdValues
+        filter => tdValues.some(tdValue => {
+          // Filter has column value and it's different of tdValue column
+          if (filter.column && tdValue.column !== filter.column) {
+            return;
+          }
 
-      self._butonCheckableRowsUpdate();
-    });
+          return tdValue.value
+            .trim()
+            .toLowerCase()
+            .startsWith(filter.search.toLowerCase());
+        })
+      );
+
+      if (filtered) {
+        result.push(row);
+      }
+    }
+
+    if (!result.length) {
+      // All fields empty will set default state to table
+      if (allSearchFieldEmpty) {
+        result = self.defaultStateTableRows;
+      } else {
+        const tr = newElement("tr");
+        const td = newElement("td", ["ta-td-message"]);
+        td.dataset.label = "Message";
+        td.colSpan = self.table.querySelectorAll("th").length;
+        td.innerHTML = "Nenhum elemento a ser exibido";
+        tr.appendChild(td);
+        result.push(tr);
+
+        // Disable check all fields
+        if (thCheckbox) {
+          thCheckbox.disabled = true;
+        }
+      }
+    }
+
+    self.tableRows = result;
+    self._updateTable();
+    self._butonCheckableRowsUpdate();
   }
 
   _paginationButtons() {
@@ -533,6 +588,8 @@ export class TableActions {
    * @param {Boolean} checkableRows Indicates whether the first column of the table is checkable.
    */
   _tableSort(checkableRows) {
+    // TODO: Add a third state where none of headers is ordered (return to initial state)
+    // TODO: After search reorder table to last sorted order
     const self = this;
 
     // Setting class to activate table arrows styles
@@ -550,9 +607,13 @@ export class TableActions {
         continue;
       }
 
+      // TODO: add tabIdex make table heder accessible with keyboard
+      // and and make possible to sort using space or enter key with th.tabIndex = 0;
+
+      // Following lines will happen in sorted table
       const otherTh = [];
 
-      // Getting other columns to remove active icons class colors
+      // Getting other columns to remove active icons classes
       for (const [index, el] of tableHeads.entries()) {
         if (index !== thIndex) otherTh.push(el);
       }
@@ -565,11 +626,24 @@ export class TableActions {
     }
   }
 
+  /**
+   * Transforms the given date string from DD/MM/YYYY format to YYYY-MM-DD format.
+   *
+   * @param {string} val - The date string in DD/MM/YYYY format.
+   * @returns {string} The date string in YYYY-MM-DD format.
+   */
   _dateStringTransform(val) {
     const res = val.split("/");
     return res[2] + "-" + res[1] + "-" + res[0];
   }
 
+  /**
+   * Formats the given value according to the specified format.
+   *
+   * @param {string} format - The format to use.
+   * @param {string} value - The value to format.
+   * @returns {Date|number|string} The formatted value.
+   */
   _sortDataFormat(format, value) {
     const self = this;
     let val = value.trim();
@@ -622,6 +696,13 @@ export class TableActions {
     return isNaN(val) ? toNormalForm(val) : parseFloat(val);
   }
 
+  /**
+   * Sorts the rows of the table based on the data in the given column.
+   *
+   * @param {HTMLElement} th - The `th` element representing the column to be sorted.
+   * @param {number} thIndex - The index of the column to be sorted.
+   * @param {HTMLElement[]} otherThs - An array of `th` elements representing the other columns in the table.
+   */
   _sortTable(th, thIndex, otherThs) {
     const self = this;
     const asc = th.dataset.asc ? !JSON.parse(th.dataset.asc) : true;
@@ -661,7 +742,7 @@ export class TableActions {
     th.dataset.asc = asc;
   }
 
-  // Getters
+  // Rows positions
 
   _currenRow() {
     return this.options.rowsPerPage * (this.currentPage - 1);
@@ -708,20 +789,22 @@ export class TableActions {
 
   _forwardBackwardbuttons() {
     const self = this;
+    const tc = self.tableContainer;
+
     if (self.currentPage === self._lastPage()) {
-      self.tableContainer.querySelector(".forward-page").disabled = true;
-      self.tableContainer.querySelector(".forward-all-pages").disabled = true;
+      tc.querySelector(".forward-page").disabled = true;
+      tc.querySelector(".forward-all-pages").disabled = true;
     } else {
-      self.tableContainer.querySelector(".forward-page").disabled = false;
-      self.tableContainer.querySelector(".forward-all-pages").disabled = false;
+      tc.querySelector(".forward-page").disabled = false;
+      tc.querySelector(".forward-all-pages").disabled = false;
     }
 
     if (self.currentPage === 1) {
-      self.tableContainer.querySelector(".backward-page").disabled = true;
-      self.tableContainer.querySelector(".back-all-pages").disabled = true;
+      tc.querySelector(".backward-page").disabled = true;
+      tc.querySelector(".back-all-pages").disabled = true;
     } else {
-      self.tableContainer.querySelector(".backward-page").disabled = false;
-      self.tableContainer.querySelector(".back-all-pages").disabled = false;
+      tc.querySelector(".backward-page").disabled = false;
+      tc.querySelector(".back-all-pages").disabled = false;
     }
   }
 

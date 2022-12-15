@@ -1,3 +1,6 @@
+// TODO: Apply BEM and
+// TODO: Enhance focus style to table header cels focus
+
 // Responsive full width
 .ta-responsive-full-width {
   min-height: 0.01%;
@@ -58,8 +61,9 @@
     }
   }
 
-  .ta__tr-interact th  {
+  .ta__tr-interact th {
     background-color: var(--color-dark);
+    width: min-content;
     padding: .5rem;
 
     &:first-child {
@@ -68,6 +72,12 @@
 
     &:last-child {
       border-right: 1px solid var(--color-tertiary);
+    }
+  }
+
+  @media (max-width: 992px) {
+    .ta__tr-interact th  {
+      width: auto;
     }
   }
 
@@ -93,7 +103,6 @@
     padding: 15px 14px;
     position: relative;
     vertical-align: middle;
-    word-break: break-all;
   }
 
   td {
@@ -272,8 +281,15 @@
       thead th.ta-checkbox-column {
         padding: 0.47rem;
       }
+
+      th:empty,
       .ta-checkbox-column:empty {
         display: none;
+      }
+
+      .ta__tr-interact th {
+        padding: 0.6rem;
+        text-align: left;
       }
     }
   }

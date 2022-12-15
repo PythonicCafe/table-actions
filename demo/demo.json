@@ -3,19 +3,26 @@
     {
       "label": "ID",
       "type": "int",
-      "title": "Identification of elements"
+      "title": "Identification of elements",
+      "search": true
     },
     {
       "label": "Drink",
-      "type": "string"
+      "type": "string",
+      "search": true,
+      "searchInput": {
+        "type": "number"
+      }
     },
     {
       "label": "Caffeine in composition",
-      "type": "bool"
+      "type": "bool",
+      "search": true
     },
     {
       "label": "Price",
-      "type": "float"
+      "type": "float",
+      "search": true
     },
     {
       "name": "profit",

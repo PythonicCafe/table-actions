@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simple Table Demo</title>
+    <title>Simple Table Demo Json Data</title>
     <link rel="stylesheet" href="../dist/table-actions.min.css" />
     <link rel="stylesheet" href="demo-purpose.css" />
   </head>
@@ -39,10 +39,10 @@
             return;
           }
           new TableActions("table", {
-            sortable: true,
+            sortable: false,
             searchable: true,
-            paginable: "list",
-            checkableRows: true,
+            paginable: "buttons",
+            checkableRows: false,
             checkableRowTrReference: "data-row-id",
             checkedElementsCallback: function (checkedElements) {
               document.querySelector("#result>span").innerHTML =

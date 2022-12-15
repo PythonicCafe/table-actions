@@ -17,12 +17,12 @@ describe("Test deepCopy, mergeObjects utils functions", () => {
     expect(copy.nested).not.toBe(obj.nested);
   });
 
-  test("deepCopy returns a copy of an object with arrays", () => { 
+  test("deepCopy returns a copy of an object with arrays", () => {
     const arr = [1, 2, 3];
     const obj = {
       prop1: "value1",
       prop2: arr,
-    }; 
+    };
     const copy = deepCopy(obj);
     expect(copy.prop2).toEqual([1, 2, 3]);
   });
