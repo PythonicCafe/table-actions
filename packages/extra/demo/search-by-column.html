@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Table Demo</title>
+    <link rel="stylesheet" href="../dist/table-actions.min.css" />
+    <link rel="stylesheet" href="demo-purpose.css" />
+  </head>
+  <body>
+    <section class="ta-container">
+      <div class="theme-toggle">
+        <span onclick="toggleTheme()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-circle-half"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"
+            />
+          </svg>
+        </span>
+      </div>
+      <h1>Table Actions Demo Search By Column</h1>
+      <table class="ta ta-responsive-full"></table>
+      <article id="result">Selected: <span>---</span></article>
+    </section>
+    <script src="../dist/table-actions.min.js"></script>
+    <script>
+      fetch("demo.json")
+        .then((response) => response.json())
+        .then((data) => {
+          if (!data["data"].length) {
+            return;
+          }
+          new TableActions("table", {
+            sortable: true,
+            searchable: true,
+            paginable: "list",
+            checkableRows: true,
+            checkableRowTrReference: "data-row-id",
+            checkedElementsCallback: function (checkedElements) {
+              document.querySelector("#result>span").innerHTML =
+                checkedElements.join(", ");
+            },
+            data: {
+              rowIdField: data.rowIdField,
+              headings: data["headings"],
+              data: data["data"].map((item) => Object.values(item)),
+            },
+          });
+        });
+    </script>
+    <script src="./demo-purpose.js"></script>
+  </body>
+</html>

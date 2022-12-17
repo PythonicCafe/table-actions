@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Table Demo HTML</title>
+    <link rel="stylesheet" href="../dist/table-actions.min.css" />
+    <link rel="stylesheet" href="demo-purpose.css" />
+  </head>
+  <body>
+    <section class="ta-container">
+      <div class="theme-toggle">
+        <span onclick="toggleTheme()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-circle-half"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"
+            />
+          </svg>
+        </span>
+      </div>
+      <h1>Table Actions Demo HTML</h1>
+      <table class="ta ta-responsive-full">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th data-search="true" data-search-input-type="input">Column 1</th>
+            <th data-search="true" data-search-input-type="select">Column 2</th>
+            <th data-unsortable>Column 3 (unsortable)</th>
+            <th data-format="DD/MM/YYYY HH:MM">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-row-id="1">
+            <td>1</td>
+            <td>árlindo</td>
+            <td>silent</td>
+            <td>lunch</td>
+            <td>01/01/1999 22:01</td>
+          </tr>
+          <tr data-row-id="2">
+            <td>2</td>
+            <td>before</td>
+            <td>origin</td>
+            <td>fog</td>
+            <td>01/01/1999 21:00</td>
+          </tr>
+          <tr data-row-id="3">
+            <td>3</td>
+            <td>after</td>
+            <td>origin</td>
+            <td>fog</td>
+            <td>01/01/1999 22:00</td>
+          </tr>
+          <tr data-row-id="4">
+            <td>4</td>
+            <td>somewhere</td>
+            <td>origin</td>
+            <td>fog</td>
+            <td>01/01/1999 22:00</td>
+          </tr>
+          <tr data-row-id="5">
+            <td>5</td>
+            <td>somewhere</td>
+            <td>origin</td>
+            <td>fog</td>
+            <td>01/01/1999 22:00</td>
+          </tr>
+          <tr data-row-id="6">
+            <td>6</td>
+            <td>somewhere</td>
+            <td>origin</td>
+            <td>fog</td>
+            <td>01/01/1999 22:00</td>
+          </tr>
+          <tr data-row-id="7">
+            <td>7</td>
+            <td>somewhere</td>
+            <td>origin</td>
+            <td>fog</td>
+            <td>01/01/1999 22:00</td>
+          </tr>
+          <tr data-row-id="8">
+            <td>8</td>
+            <td>somewhere</td>
+            <td>origin</td>
+            <td>fog</td>
+            <td>01/01/1999 22:00</td>
+          </tr>
+          <tr data-row-id="9">
+            <td>9</td>
+            <td>somewhere</td>
+            <td>origin</td>
+            <td>fog</td>
+            <td>01/01/1999 22:00</td>
+          </tr>
+          <tr data-row-id="10">
+            <td>10</td>
+            <td>somewhere</td>
+            <td>origin</td>
+            <td>fog</td>
+            <td>01/01/1999 22:00</td>
+          </tr>
+          <tr data-row-id="11">
+            <td>11</td>
+            <td>somewhere</td>
+            <td>origin</td>
+            <td>fog</td>
+            <td>01/01/1999 22:00</td>
+          </tr>
+        </tbody>
+      </table>
+      <article id="result">Selected: <span>---</span></article>
+    </section>
+
+    <script src="../dist/table-actions.min.js"></script>
+    <script>
+     new TableActions("table", {
+        sortable: true,
+        searchable: true,
+        paginable: "buttons",
+        checkableRows: true,
+        checkableRowTrReference: "data-row-id",
+        checkedElementsCallback: function (checkedElements) {
+          document.querySelector("#result>span").innerHTML =
+            checkedElements.join(", ");
+        },
+      });
+    </script>
+    <script src="./demo-purpose.js"></script>
+  </body>
+</html>

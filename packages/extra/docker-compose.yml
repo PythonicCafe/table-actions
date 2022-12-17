@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    env_file:
+      - .env
+    user: "${UID}:${GID}"
+    container_name: table_actions_extra_dev
+    stdin_open: true
+    command:
+      - "/bin/sh"
+    ports:
+      - "3000:3000"
+    volumes:
+      - "/app/node_modules"
+      - ".:/app"
+
+volumes:
+  node_modules:

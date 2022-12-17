@@ -1,0 +1,57 @@
+{
+  "name": "table-actions-extra",
+  "version": "0.1.0",
+  "description": "Simple & customizable table with sort and checkbox functions in vanilla JS",
+  "amdName": "TableActions",
+  "source": "src/index.js",
+  "exports": {
+    "default": "./dist/table-actions.min.js"
+  },
+  "scripts": {
+    "build": "microbundle -o dist/table-actions.min.js -f umd --sourcemap false --external none --no-pkg-main",
+    "eslint": "eslint 'src/*.js'",
+    "prettier": "prettier --write .",
+    "test": "jest --detectOpenHandles --forceExit",
+    "test-watch": "jest --detectOpenHandles --watchAll",
+    "watch": "microbundle -o dist/table-actions.min.js -f umd --sourcemap true --no-pkg-main --external none watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcmatias/table-actions.git"
+  },
+  "files": [
+    "dist/table-actions.min.js",
+    "dist/table-actions.min.css",
+    "README.md"
+  ],
+  "keywords": [
+    "table",
+    "pagination",
+    "sortable"
+  ],
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "author": "Pythonic Café",
+  "license": "(LGPL-3.0)",
+  "bugs": {
+    "url": "https://github.com/marcmatias/table-actions/issues"
+  },
+  "homepage": "https://github.com/marcmatias/table-actions#readme",
+  "jest": {
+    "setupFilesAfterEnv": [
+      "./jestGlobalSetup.js"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "jest": "^29.2.2",
+    "lite-server": "^2.6.1",
+    "microbundle": "^0.15.1",
+    "prettier": "^2.7.1",
+    "puppeteer": "^19.2.0"
+  },
+  "dependencies": {
+    "select-actions": "^0.0.13",
+    "table-actions": "^0.1.16"
+  }
+}

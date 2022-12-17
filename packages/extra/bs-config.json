@@ -1,0 +1,19 @@
+{
+  "notify": false,
+  "ghostMode": false,
+  "logLevel": "silent",
+  "injectChanges": false,
+  "files": [
+    "./src/assets/*.scss",
+    "./src/assets/**/*.scss",
+    "./src/*.{js}",
+    "./*.{html,css,js,scss}",
+    "./demo/*.{html,css,js}",
+    "./dist/*.{js, css}"
+  ],
+  "watchOptions": { "ignored": "node_modules" },
+  "server": {
+    "baseDir": "./"
+  },
+  "open": false
+}

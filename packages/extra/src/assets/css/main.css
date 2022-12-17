@@ -1,0 +1,24 @@
+
+@import "../node_modules/table-actions/dist/table-actions.min.css";
+
+@import "../node_modules/select-actions/dist/select-actions.min.css";
+
+/* Updating colors vars */
+:root {
+    --color-bg: var(--color-light);
+}
+
+.dark {
+    --color-bg: var(--color-light);
+}
+
+/* Overwrite some necessary themes from select-actions */
+.ta-div-sa {
+  font-weight: 400;
+}
+
+.sa-dropdown:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--border-radius-radius);
+}
