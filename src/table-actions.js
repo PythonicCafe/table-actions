@@ -23,7 +23,8 @@ export class TableActions {
       // paginable: list or buttons
       paginable: options.paginable || "buttons",
       rowsPerPage: options.rowsPerPage || 10,
-      checkableRows: options.checkableRows !== undefined ? options.checkableRows : false,
+      checkableRows:
+        options.checkableRows !== undefined ? options.checkableRows : false,
       checkableRowTrReference: options.checkableRowTrReference || "data-row-id",
       alreadyAddedElements: options.alreadyAddedElements,
       checkedElementsCallback:
@@ -103,7 +104,7 @@ export class TableActions {
         nodeToAppend: tr,
         datasets: [
           { name: "type", value: head.type },
-          { name: "search", value: head.search ? head.search : false }
+          { name: "search", value: head.search ? head.search : false },
         ],
       });
     }
@@ -138,7 +139,7 @@ export class TableActions {
     const self = this;
     let data = {};
 
-    if(this.JsonData) {
+    if (this.JsonData) {
       data = this.JsonData;
     } else {
       const tableRowHeads = this.table.querySelector("tr");
@@ -156,7 +157,7 @@ export class TableActions {
           search: th.dataset.search,
           title: th.title,
           type: th.dataset.type,
-        })
+        });
       }
     }
 
@@ -185,11 +186,13 @@ export class TableActions {
         input.classList = ["ta-search__input ta-search__input--column"];
         input.placeholder = "Pesquisa em " + head.label;
 
-        const searchInput = head.searchInput ? head.searchInput : undefined;
-        div.appendChild(input)
+        div.appendChild(input);
         // Activate search field by column
         input.addEventListener("keyup", function (e) {
-          self.tableSearch(this.value.length === 0, ["Backspace", "Delete"].includes(e.key));
+          self.tableSearch(
+            this.value.length === 0,
+            ["Backspace", "Delete"].includes(e.key)
+          );
         });
         th.appendChild(div);
       }
@@ -219,14 +222,18 @@ export class TableActions {
         classList: ["ta-search"],
       },
     }).addEventListener("keyup", function (e) {
-      self.tableSearch(this.querySelector("input").value.length === 0, ["Backspace", "Delete"].includes(e.key));
+      self.tableSearch(
+        this.querySelector("input").value.length === 0,
+        ["Backspace", "Delete"].includes(e.key)
+      );
     });
   }
 
   tableSearch(currentFieldEmpty, erasing) {
     const self = this;
-    const allSearchFieldEmpty = ![...self.tableContainer.querySelectorAll("input.ta-search__input")]
-      .find(x => x.value.length > 0);
+    const allSearchFieldEmpty = ![
+      ...self.tableContainer.querySelectorAll("input.ta-search__input"),
+    ].find((x) => x.value.length > 0);
     let thCheckbox = self.table.querySelector("th>[type='checkbox']");
 
     if (thCheckbox) {
@@ -240,7 +247,9 @@ export class TableActions {
 
     const filters = [];
     let result = [];
-    for (const searchField of self.tableContainer.querySelectorAll("input.ta-search__input")) {
+    for (const searchField of self.tableContainer.querySelectorAll(
+      "input.ta-search__input"
+    )) {
       const search = searchField.value;
       const column = searchField.parentNode.dataset.label;
 
@@ -274,17 +283,18 @@ export class TableActions {
       // Check if all filters found result
       filtered = filters.every(
         // True if all filters found at least one result in tdValues
-        filter => tdValues.some(tdValue => {
-          // Filter has column value and it's different of tdValue column
-          if (filter.column && tdValue.column !== filter.column) {
-            return;
-          }
+        (filter) =>
+          tdValues.some((tdValue) => {
+            // Filter has column value and it's different of tdValue column
+            if (filter.column && tdValue.column !== filter.column) {
+              return;
+            }
 
-          return tdValue.value
-            .trim()
-            .toLowerCase()
-            .startsWith(filter.search.toLowerCase());
-        })
+            return tdValue.value
+              .trim()
+              .toLowerCase()
+              .startsWith(filter.search.toLowerCase());
+          })
       );
 
       if (filtered) {
@@ -449,7 +459,6 @@ export class TableActions {
     }
   }
 
-
   /**
    * Creates a checkbox input and a parent element of the specified type.
    *
@@ -493,7 +502,11 @@ export class TableActions {
     for (const tr of tableTrs) {
       let newTdCheckbox;
       if (alreadyAdded && alreadyAdded.includes(tr.dataset.rowId)) {
-        newTdCheckbox = self._tableCheckboxInsert("td", ["ta-checkbox-row"], true);
+        newTdCheckbox = self._tableCheckboxInsert(
+          "td",
+          ["ta-checkbox-row"],
+          true
+        );
       } else {
         newTdCheckbox = self._tableCheckboxInsert("td", ["ta-checkbox-row"]);
       }

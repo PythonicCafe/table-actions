@@ -7,8 +7,8 @@ describe("Test deepCopy, mergeObjects utils functions", () => {
       prop2: "value2",
       nested: {
         propA: "valueA",
-        propB: "valueB"
-      }
+        propB: "valueB",
+      },
     };
     const copy = deepCopy(obj);
     expect(copy).toEqual(obj);
@@ -33,16 +33,16 @@ describe("Test deepCopy, mergeObjects utils functions", () => {
       prop2: "value2",
       nested: {
         propA: "valueA",
-        propB: "valueB"
-      }
+        propB: "valueB",
+      },
     };
     const obj2 = {
       prop3: "value3",
       prop4: "value4",
       nested: {
         propC: "valueC",
-        propD: "valueD"
-      }
+        propD: "valueD",
+      },
     };
     const merged = mergeObjects(obj1, obj2);
     expect(merged).toEqual({
@@ -54,8 +54,8 @@ describe("Test deepCopy, mergeObjects utils functions", () => {
         propA: "valueA",
         propB: "valueB",
         propC: "valueC",
-        propD: "valueD"
-      }
+        propD: "valueD",
+      },
     });
   });
 
@@ -65,16 +65,16 @@ describe("Test deepCopy, mergeObjects utils functions", () => {
       prop2: "value2",
       nested: {
         propA: "valueA",
-        propB: "valueB"
-      }
+        propB: "valueB",
+      },
     };
     const obj2 = {
       prop1: "newValue1",
       prop3: "value3",
       nested: {
         propB: "newValueB",
-        propC: "valueC"
-      }
+        propC: "valueC",
+      },
     };
     const merged = mergeObjects(obj1, obj2);
     expect(merged).toEqual({
@@ -84,9 +84,8 @@ describe("Test deepCopy, mergeObjects utils functions", () => {
       nested: {
         propA: "valueA",
         propB: "newValueB",
-        propC: "valueC"
-      }
+        propC: "valueC",
+      },
     });
   });
-
-})
+});
