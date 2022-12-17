@@ -1,0 +1,12 @@
+{
+  "packages": ["packages/*"],
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
+  "version": "0.1.0",
+  "npmClient": "yarn",
+  "command": {
+    "publish": {
+      "requireGit": true,
+      "conventionalCommits": true
+    }
+  }
+}
