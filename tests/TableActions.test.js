@@ -59,7 +59,7 @@ describe("Table Actions Suite", () => {
   });
 
   test("Search table", async () => {
-    await page.type(".ta-search-container>input", "árlindo", { delay: 300 });
+    await page.type(".ta-search>input", "árlindo", { delay: 300 });
 
     const rowLength = await page.evaluate(
       () => document.querySelectorAll(".ta tbody tr").length
@@ -68,7 +68,7 @@ describe("Table Actions Suite", () => {
   });
 
   test("Search table unexisting row value", async () => {
-    await page.type(".ta-search-container>input", "000xxx", { delay: 300 });
+    await page.type(".ta-search>input", "000xxx", { delay: 300 });
 
     const rowLength = await page.evaluate(
       () => document.querySelectorAll(".ta tbody tr").length
