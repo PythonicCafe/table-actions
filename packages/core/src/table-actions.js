@@ -13,6 +13,7 @@ export class TableActions {
       ? this.table.parentNode.parentNode
       : this.table.parentNode;
 
+    // TODO: Enhance set and get of this parameter
     this.dataJson = options.data;
 
     this.options = {
@@ -43,17 +44,18 @@ export class TableActions {
     if (this.dataJson) {
       this._populateTableFromJson(this.dataJson);
     }
+
     this._addTableClasses();
+
+    // Query initial state table rows
+    this.tableRows = [
+      ...this.table.querySelector("tbody").querySelectorAll("tr"),
+    ];
 
     // At least one column with search true will set search column header
     if (this.table.querySelector(`th[data-search='true']`)) {
       this._searchColumnsFields();
     }
-
-    // Query inicial state table rows
-    this.tableRows = [
-      ...this.table.querySelector("tbody").querySelectorAll("tr"),
-    ];
 
     this.hasPages = this._lastPage() > 1;
     this.currentPage = 1;
@@ -155,6 +157,7 @@ export class TableActions {
           format: th.dataset.format,
           label: th.innerText,
           search: th.dataset.search,
+          searchInputType: th.dataset.searchInputType,
           title: th.title,
           type: th.dataset.type,
         });
@@ -178,27 +181,67 @@ export class TableActions {
       });
 
       if (head.search) {
-        let div = newElement("div");
-        div.classList = ["ta-search"];
-        div.dataset.label = head.label;
-
-        const input = newElement("input");
-        input.classList = ["ta-search__input ta-search__input--column"];
-        input.placeholder = "Pesquisa em " + head.label;
-
-        div.appendChild(input);
-        // Activate search field by column
-        input.addEventListener("keyup", function (e) {
-          self.tableSearch(
-            this.value.length === 0,
-            ["Backspace", "Delete"].includes(e.key)
-          );
-        });
-        th.appendChild(div);
+        const inputSearch = self.columnSearchInputType(head);
+        if(inputSearch) {
+          th.appendChild(inputSearch);
+        }
       }
     }
 
     this.table.querySelector("thead").appendChild(trInteract);
+  }
+
+  columnSearchInputType(head) {
+    const self = this;
+
+    // Undefined or defined as input will create an inputColumnSearch
+    if (!head.searchInputType ||  head.searchInputType == 'input') {
+      return self.inputColumnSearch(head);
+    }
+
+    return;
+  }
+
+  inputColumnSearch(head) {
+    const self = this;
+
+    const input = newElement("input",  ["ta-search-field", "ta-search__input", "ta-search__input--column"]);
+    input.placeholder = "Pesquisa em " + head.label;
+
+    let div = newElement("div");
+    div.classList = ["ta-search"];
+    div.dataset.label = head.label;
+
+    // Activate search field by column
+    self._inputSearchEventListeners(input);
+
+    div.appendChild(input);
+
+    return div;
+  }
+
+  /**
+   * This will add events keyup and input to search input HTMLElement.
+   * refresh parameter will be true if coditions are met
+   *
+   * @param {HTMLElement} input element to add eventListeners
+   */
+  _inputSearchEventListeners(input) {
+    const self = this;
+
+    input.addEventListener("keyup", function (e) {
+      self.tableSearch(
+        this.value.length === 0 ||
+        ["Backspace", "Delete"].includes(e.key)
+      );
+    });
+
+    input.addEventListener("input", function (e) {
+      if (e.inputType && e.inputType === "insertFromPaste") {
+        self.tableSearch(true);
+      }
+    });
+
   }
 
   _addTableClasses() {
@@ -210,8 +253,8 @@ export class TableActions {
   _searchField() {
     const self = this;
 
-    newElementToNode("input", {
-      classList: ["ta-search__input"],
+    const div = newElementToNode("input", {
+      classList: ["ta-search-field", "ta-search__input"],
       label: "Pesquisa",
       nodeToAppend: this.tableContainer,
       prependEl: this.taResponsiveContainer
@@ -221,19 +264,18 @@ export class TableActions {
         element: "div",
         classList: ["ta-search"],
       },
-    }).addEventListener("keyup", function (e) {
-      self.tableSearch(
-        this.querySelector("input").value.length === 0,
-        ["Backspace", "Delete"].includes(e.key)
-      );
-    });
+    })
+
+    self._inputSearchEventListeners(div.querySelector("input"));
   }
 
-  tableSearch(currentFieldEmpty, erasing) {
+  tableSearch(refresh) {
     const self = this;
+
     const allSearchFieldEmpty = ![
-      ...self.tableContainer.querySelectorAll("input.ta-search__input"),
+      ...self.tableContainer.querySelectorAll(".ta-search-field"),
     ].find((x) => x.value.length > 0);
+
     let thCheckbox = self.table.querySelector("th>[type='checkbox']");
 
     if (thCheckbox) {
@@ -241,19 +283,19 @@ export class TableActions {
     }
 
     // This will set default state to table, else set last state
-    if (allSearchFieldEmpty || currentFieldEmpty || erasing) {
+    if (allSearchFieldEmpty || refresh) {
       self.tableRows = self.defaultStateTableRows;
     }
 
     const filters = [];
     let result = [];
     for (const searchField of self.tableContainer.querySelectorAll(
-      "input.ta-search__input"
+      ".ta-search-field"
     )) {
       const search = searchField.value;
       const column = searchField.parentNode.dataset.label;
 
-      if (search.length) {
+      if (search.length > 0) {
         if (self.options.paginable) {
           // Return to page 1
           self.currentPage = 1;
@@ -620,7 +662,7 @@ export class TableActions {
         continue;
       }
 
-      // TODO: add tabIdex make table heder accessible with keyboard
+      // TODO: add tabIdex make table header accessible with keyboard
       // and and make possible to sort using space or enter key with th.tabIndex = 0;
 
       // Following lines will happen in sorted table
@@ -632,7 +674,7 @@ export class TableActions {
       }
 
       // Setting events listeners to get click in table headers.
-      // Clicks will activate sort to the clicked column
+      // Click will activate sort to the clicked column
       th.addEventListener("click", function () {
         self._sortTable(th, thIndex, otherTh);
       });
