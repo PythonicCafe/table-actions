@@ -1,6 +1,6 @@
 {
   "name": "table-actions",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Simple & customizable table with sort and checkbox functions in vanilla JS",
   "amdName": "TableActions",
   "exports": {
