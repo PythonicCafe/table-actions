@@ -27,7 +27,7 @@
         </span>
       </div>
       <h1>Table Actions Demo Json Data</h1>
-      <table class="ta ta-responsive-full"></table>
+      <div class="ta-table"></div>
       <article id="result">Selected: <span>---</span></article>
     </section>
     <script src="../dist/table-actions.min.js"></script>
@@ -38,7 +38,7 @@
           if (!data["data"].length) {
             return;
           }
-          new TableActions("table", {
+          new TableActions(".ta-table", {
             sortable: false,
             searchable: true,
             paginable: "buttons",

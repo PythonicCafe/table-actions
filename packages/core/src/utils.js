@@ -3,16 +3,6 @@
  */
 
 /*
- * Normalize a stirng and return it
- *
- * @param {string} a string to be normalized (e.g. "imaginação", "tensão")
- * @returns {string} The normalized string
- */
-export function toNormalForm(str) {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-}
-
-/*
  * Create a new element and return it
  *
  * @param {string} element The type of element to create (e.g. "div", "button")
@@ -167,3 +157,5 @@ export function mergeObjects(opts1, opts2) {
 
   return merged;
 }
+
+
