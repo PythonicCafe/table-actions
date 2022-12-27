@@ -48,9 +48,9 @@
               document.querySelector("#result>span").innerHTML =
                 checkedElements.join(", ");
             },
-            data: {
+            dataJson: {
               rowIdField: data.rowIdField,
-              headings: data["headings"],
+              head: data["head"],
               data: data["data"].map((item) => Object.values(item)),
             },
           });

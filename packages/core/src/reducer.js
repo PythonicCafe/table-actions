@@ -10,43 +10,47 @@ export default function reducer(state, action) {
   const payload = action.payload;
   switch (action.type) {
     case "SORT_COLUMN":
-      // Reset all other table column sort icons
-      state.headItems.filter(item => item !== state.headItems[payload.index]).forEach(item => item.asc = undefined);
-      // Set current table column sorted
-      state.headItems[payload.index].asc =
-        state.headItems[payload.index].asc ? !state.headItems[payload.index].asc : true;
+      const headItems = state.headItems[0].items;
+      const currentHeadItem = headItems[payload.index];
 
-      const asc = state.headItems[payload.index].asc;
-      const format = state.headItems[payload.index].format;
+      // Reset all other table column sort icons
+      headItems.filter(item => item !== currentHeadItem).forEach(item => item.asc = undefined);
+      // Set current table column sorted
+      currentHeadItem.asc =
+        currentHeadItem.asc ? !currentHeadItem.asc : true;
+
+      const asc = currentHeadItem.asc;
+      const format = currentHeadItem.format;
 
       state.bodyItems.sort(function (val, nextVal) {
-        val = val[payload.index].label;
-        nextVal = nextVal[payload.index].label;
+        let valLabel = JSON.stringify(val.items[payload.index].label);
+        let nextValLabel = JSON.stringify(nextVal.items[payload.index].label);
 
         if (format) {
-          val = sortDataFormat(format, val);
-          nextVal = sortDataFormat(format, nextVal);
+          valLabel = sortDataFormat(format, valLabel);
+          nextValLabel = sortDataFormat(format, nextValLabel);
         } else {
-          val = genericSortDataFormat(val);
-          nextVal = genericSortDataFormat(nextVal);
+          valLabel = genericSortDataFormat(valLabel);
+          nextValLabel = genericSortDataFormat(nextValLabel);
         }
 
-        if ((asc && val > nextVal) || (!asc && val < nextVal)) {
+        if ((asc && valLabel > nextValLabel) || (!asc && valLabel < nextValLabel)) {
           return 1;
         }
-        if ((asc && val < nextVal) || (!asc && val > nextVal)) {
+        if ((asc && valLabel < nextValLabel) || (!asc && valLabel > nextValLabel)) {
           return -1;
         }
 
         // value must be equal to nextValue
         return 0;
       });
+
       break;
-    case "SEARCH":
+    case "POPULATE":
+      state = { ...state, ...payload.data };
       break;
     case "RESET":
     default:
-      // state.counter = 0;
       break;
   }
 

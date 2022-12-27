@@ -1,5 +1,5 @@
 {
-  "headings": [
+  "head": [
     {
       "label": "ID",
       "type": "int",

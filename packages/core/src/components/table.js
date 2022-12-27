@@ -1,15 +1,12 @@
-export default class Table {
+import Component from "./component.js";
+
+export default class Table extends Component {
   constructor(element, store) {
-    const self = this;
-    this.element =
-      typeof element === "string" ? document.querySelector(element) : element;
-
-    // Component subscribed to store pubSub
-    store.pubSub.subscribe("stateUpdate", function () { self.render() });
-
-    this.store = store;
+    super(
+      element,
+      store
+    )
   }
-
 
   render () {
     const self = this;
@@ -19,7 +16,7 @@ export default class Table {
       <table class="ta ta-sortable ta-responsive-full">
         <thead>
           <tr class="ta__tr-main">
-            ${state.headItems.map(item => {
+            ${state.headItems[0].items.map(item => {
               return `
                 <th data-asc=${item.asc === undefined ? '' : item.asc}>${item.label}</th>
               `
@@ -30,7 +27,7 @@ export default class Table {
             ${state.bodyItems.map(tr => {
               return `
                 <tr>
-                  ${tr.map(td => {
+                  ${tr.items.map(td => {
                     return `<td>${td.label}</td>`
                   }).join('')}
                 </tr>`
@@ -38,6 +35,12 @@ export default class Table {
         </tbody>
       </table>
     `;
+
+    const table = self.element.querySelector("table");
+    const tableClassList = table ? [...table.classList] : [...self.element.classList];
+    if(!tableClassList.includes("ta-sortable")) {
+      return;
+    }
 
     self.element.querySelectorAll('th').forEach((th, index) => {
       th.addEventListener('click', () => {
