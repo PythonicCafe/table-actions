@@ -35,9 +35,6 @@
       fetch("demo.json")
         .then((response) => response.json())
         .then((data) => {
-          if (!data["data"].length) {
-            return;
-          }
           new TableActions("table", {
             sortable: false,
             searchable: true,

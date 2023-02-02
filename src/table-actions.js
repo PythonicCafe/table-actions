@@ -49,7 +49,7 @@ export class TableActions {
       this._searchColumnsFields();
     }
 
-    // Query inicial state table rows
+    // Initial state table rows
     this.tableRows = [
       ...this.table.querySelector("tbody").querySelectorAll("tr"),
     ];
@@ -71,7 +71,6 @@ export class TableActions {
 
     if (this.options.paginable && this.hasPages) {
       this._paginationButtons();
-      this._updateTable();
     }
 
     // Add dataset values to generate mobile table headers
@@ -83,6 +82,8 @@ export class TableActions {
     }
 
     this.defaultStateTableRows = [...this.tableRows];
+
+    this._updateTable();
   }
 
   _populateTableFromJson(data) {
@@ -118,6 +119,11 @@ export class TableActions {
     }
 
     thead.appendChild(tr);
+
+    if (data.data.length == 0) {
+      this._emptyTableRowResult();
+      return;
+    }
 
     // Populating table rows
     for (const row of [...data.data]) {
@@ -382,6 +388,11 @@ export class TableActions {
     const self = this;
     const tableHeadRow = this.table.querySelector("tr");
     const tableHeads = tableHeadRow.querySelectorAll("th");
+
+    // If empty table rows do nothing
+    if (self.tableRows.length == 0) {
+      return;
+    }
 
     for (const tr of self.tableRows) {
       for (const [key, th] of tableHeads.entries()) {
@@ -756,10 +767,32 @@ export class TableActions {
     return Math.ceil(this.tableRows.length / this.options.rowsPerPage);
   }
 
+  _emptyTableRowResult() {
+    const self = this;
+
+    // If message already do nothing
+    if (this.table.querySelector(".ta-td-message")) {
+      return;
+    }
+
+    const tbody = this.table.querySelector("tbody");
+    const tr = newElement("tr");
+    const td = newElement("td", ["ta-td-message"]);
+    td.innerHTML = "Nenhum elemento a ser exibido";
+    td.colSpan = this.table.querySelectorAll("th").length;
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  }
   // Updates of elements
 
   _updateTable() {
     const self = this;
+
+    if (self.tableRows.length == 0) {
+      self._emptyTableRowResult();
+      return;
+    }
+
     const tbody = self.table.querySelector("tbody");
 
     tbody.innerHTML = "";
