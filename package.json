@@ -22,6 +22,7 @@
   "files": [
     "dist/table-actions.min.js",
     "dist/table-actions.min.css",
+    "LICENSE",
     "README.md"
   ],
   "keywords": [
