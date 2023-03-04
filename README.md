@@ -57,7 +57,7 @@ Or directly in the HTML file
 <!-- or directly from unpkg -->
 <link
   rel="stylesheet"
-  href="https://unpkg.com/table-actions@latest/css/table-actions.min.css"
+  href="https://unpkg.com/table-actions@latest/dist/table-actions.min.css"
 />
 <script src="https://unpkg.com/table-actions@latest/dist/table-actions.min.js"></script>
 ```
