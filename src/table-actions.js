@@ -24,6 +24,7 @@ export class TableActions {
       paginable: options.paginable || "buttons",
       rowsPerPage: options.rowsPerPage || 10,
       checkableRows: options.checkableRows !== undefined ? options.checkableRows : false,
+      checkAllCheckbox: options.checkAllCheckbox !== undefined ? options.checkAllCheckbox : true,
       checkableRowTrReference: options.checkableRowTrReference || "data-row-id",
       alreadyAddedElements: options.alreadyAddedElements,
       checkedElementsCallback:
@@ -498,7 +499,14 @@ export class TableActions {
     const tableTrs = self.table.querySelectorAll("tbody>tr");
     // Add table header checkbox
     const tr = self.table.querySelector("thead>tr");
-    tr.prepend(this._tableCheckboxInsert("th", ["ta-checkbox-column"]));
+    if (this.options.checkAllCheckbox) {
+      tr.prepend(this._tableCheckboxInsert("th", ["ta-checkbox-column"]));
+    } else {
+      const th = document.createElement("th")
+      th.classList.add("ta-checkbox-column");
+      tr.prepend(th);
+    }
+
 
     // Add table rows checkbox
     for (const tr of tableTrs) {
@@ -574,7 +582,9 @@ export class TableActions {
             button.disabled = true;
           }
         } else {
-          self.table.querySelector("thead [type='checkbox']").checked = false;
+          if (this.options.checkAllCheckbox) {
+            self.table.querySelector("thead [type='checkbox']").checked = false;
+          }
           event.target.closest("tr").classList.toggle("checked");
           self._butonCheckableRowsUpdate();
         }
