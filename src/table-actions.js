@@ -290,7 +290,14 @@ export class TableActions {
           return tdValue.value
             .trim()
             .toLowerCase()
-            .startsWith(filter.search.toLowerCase());
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .includes(
+              filter
+                .search
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+            );
         })
       );
 
